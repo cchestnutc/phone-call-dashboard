@@ -1,0 +1,51 @@
+.dashboard-container {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 40px;
+  font-family: Arial, sans-serif;
+}
+
+.dashboard-title {
+  text-align: center;
+  font-size: 2rem;
+  margin-bottom: 30px;
+}
+
+/* Flex layout for three side-by-side sections */
+.summary-breakdown-container {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 40px;
+}
+
+/* Each section takes about 1/3 of the space */
+.agent-summary, .hourly-breakdown, .monthly-chart {
+  flex: 1 1 30%;
+  min-width: 300px;
+}
+
+/* Table styling for all tables */
+table {
+  width: 100%;
+  border-collapse: collapse;
+  margin-top: 10px;
+}
+
+th, td {
+  border: 1px solid #ddd;
+  padding: 10px;
+  text-align: center;
+}
+
+th {
+  background-color: #f2f2f2;
+  font-weight: bold;
+}
+
+/* Margin for details table */
+.details-table {
+  margin-bottom: 40px;
+}
+
+
