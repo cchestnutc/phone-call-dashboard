@@ -8,9 +8,9 @@ import {
   CartesianGrid,
   ResponsiveContainer,
   Cell,
+  LabelList,
 } from "recharts";
 
-// Define color palettes for each year
 const colorPalettes = [
   ["#4e79a7", "#a0cbe8"],
   ["#f28e2c", "#fbc15e"],
@@ -20,7 +20,6 @@ const colorPalettes = [
 ];
 
 const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
-  // Group calls by month/year
   const grouped = calls.reduce((acc, call) => {
     const date = new Date(call.startDate);
     if (isNaN(date)) return acc;
@@ -31,7 +30,6 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
     return acc;
   }, {});
 
-  // Prepare chart data with formatted label and raw values
   const chartData = Object.entries(grouped).map(([key, count]) => {
     const [month, year] = key.split("/").map(Number);
     const label = `${new Date(0, month).toLocaleString("default", {
@@ -46,10 +44,8 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
     };
   });
 
-  // Sort chronologically
   chartData.sort((a, b) => (a.year !== b.year ? a.year - b.year : a.month - b.month));
 
-  // Assign colors by alternating 2 per year, different for each year
   const yearToPalette = {};
   let paletteIndex = 0;
 
@@ -73,6 +69,7 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
           <YAxis />
           <Tooltip />
           <Bar dataKey="count">
+            <LabelList dataKey="count" position="top" />
             {barsWithColors.map((entry, index) => (
               <Cell key={`cell-${index}`} fill={entry.fill} />
             ))}
@@ -84,5 +81,6 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
 };
 
 export default MonthlyCallVolumeChart;
+
 
 

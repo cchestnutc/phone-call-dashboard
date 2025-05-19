@@ -1,4 +1,3 @@
-
 // src/components/AgentSummary.jsx
 import React from "react";
 
@@ -28,6 +27,13 @@ function AgentSummary({ calls }) {
 
   const agents = Object.entries(agentData);
 
+  const formatTime = (totalSeconds) => {
+    const h = Math.floor(totalSeconds / 3600);
+    const m = Math.floor((totalSeconds % 3600) / 60).toString().padStart(2, "0");
+    const s = Math.floor(totalSeconds % 60).toString().padStart(2, "0");
+    return `${h}:${m}:${s}`;
+  };
+
   return (
     <div>
       <h2>Agent Summary</h2>
@@ -37,19 +43,18 @@ function AgentSummary({ calls }) {
             <th>Agent Name</th>
             <th>Total Calls</th>
             <th>Total Talk Time (hh:mm:ss)</th>
+            <th>Avg Talk Time</th>
           </tr>
         </thead>
         <tbody>
           {agents.map(([agent, data]) => {
-            const hours = Math.floor(data.totalTalkSeconds / 3600);
-            const minutes = Math.floor((data.totalTalkSeconds % 3600) / 60);
-            const seconds = data.totalTalkSeconds % 60;
-            const formattedTime = `${hours}:${minutes.toString().padStart(2, "0")}:${seconds.toString().padStart(2, "0")}`;
+            const avgSeconds = data.totalTalkSeconds / data.totalCalls || 0;
             return (
               <tr key={agent}>
                 <td>{agent}</td>
                 <td>{data.totalCalls}</td>
-                <td>{formattedTime}</td>
+                <td>{formatTime(data.totalTalkSeconds)}</td>
+                <td>{formatTime(avgSeconds)}</td>
               </tr>
             );
           })}
