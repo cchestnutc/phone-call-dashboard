@@ -14,7 +14,6 @@ function App() {
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState([]);
   const [selectedYear, setSelectedYear] = useState([]);
-  const [selectedWeek, setSelectedWeek] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -50,16 +49,8 @@ function App() {
       });
     }
 
-    if (selectedWeek.length > 0) {
-      data = data.filter(call => {
-        const date = new Date(call.startDate);
-        const week = Math.ceil(date.getDate() / 7);
-        return selectedWeek.includes(week);
-      });
-    }
-
     setFilteredCalls(data);
-  }, [calls, selectedAgents, selectedMonth, selectedYear, selectedWeek]);
+  }, [calls, selectedAgents, selectedMonth, selectedYear]);
 
   const uniqueAgents = [...new Set(calls.map(call => call.agentName))];
 
@@ -88,7 +79,8 @@ function App() {
           <MonthlyCallVolumeChart title="Call Volume" calls={filteredCalls} />
         </div>
       </div>
-      {/*
+
+      {/* 
       <div className="details-table">
         <table>
           <thead>
@@ -116,11 +108,13 @@ function App() {
             ))}
           </tbody>
         </table>
-      </div >
+      </div>
       */}
+
     </div>
   );
 }
 
 export default App;
+
 
