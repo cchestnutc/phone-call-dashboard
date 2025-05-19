@@ -4,7 +4,7 @@ import { collection, getDocs } from "firebase/firestore";
 import AgentSummary from "./components/AgentSummary";
 import HourlyBreakdown from "./components/HourlyBreakdown";
 import MonthlyCallVolumeChart from "./components/MonthlyCallVolumeChart";
-import FilterBar from "./components/FilterBar"; // New
+import FilterBar from "./components/FilterBar";
 import './App.css';
 
 function App() {
@@ -12,8 +12,9 @@ function App() {
   const [filteredCalls, setFilteredCalls] = useState([]);
 
   const [selectedAgents, setSelectedAgents] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState("");
-  const [selectedWeek, setSelectedWeek] = useState("");
+  const [selectedMonth, setSelectedMonth] = useState([]);
+  const [selectedYear, setSelectedYear] = useState([]);
+  const [selectedWeek, setSelectedWeek] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -35,23 +36,30 @@ function App() {
       data = data.filter(call => selectedAgents.includes(call.agentName));
     }
 
-    if (selectedMonth) {
+    if (selectedMonth.length > 0) {
       data = data.filter(call => {
         const date = new Date(call.startDate);
-        return date.getMonth() + 1 === Number(selectedMonth);
+        return selectedMonth.includes(date.getMonth() + 1);
       });
     }
 
-    if (selectedWeek) {
+    if (selectedYear.length > 0) {
+      data = data.filter(call => {
+        const date = new Date(call.startDate);
+        return selectedYear.includes(date.getFullYear());
+      });
+    }
+
+    if (selectedWeek.length > 0) {
       data = data.filter(call => {
         const date = new Date(call.startDate);
         const week = Math.ceil(date.getDate() / 7);
-        return week === Number(selectedWeek);
+        return selectedWeek.includes(week);
       });
     }
 
     setFilteredCalls(data);
-  }, [calls, selectedAgents, selectedMonth, selectedWeek]);
+  }, [calls, selectedAgents, selectedMonth, selectedYear, selectedWeek]);
 
   const uniqueAgents = [...new Set(calls.map(call => call.agentName))];
 
@@ -65,6 +73,8 @@ function App() {
         onAgentChange={setSelectedAgents}
         selectedMonth={selectedMonth}
         onMonthChange={setSelectedMonth}
+        selectedYear={selectedYear}
+        onYearChange={setSelectedYear}
         selectedWeek={selectedWeek}
         onWeekChange={setSelectedWeek}
       />
@@ -114,3 +124,4 @@ function App() {
 }
 
 export default App;
+

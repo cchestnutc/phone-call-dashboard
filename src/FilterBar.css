@@ -1,0 +1,18 @@
+.filter-bar-horizontal {
+  display: flex;
+  gap: 2rem;
+  flex-wrap: wrap;
+  margin-bottom: 1.5rem;
+}
+
+.filter-group {
+  display: flex;
+  flex-direction: column;
+  min-width: 200px;
+}
+
+.filter-group label {
+  font-weight: bold;
+  margin-bottom: 0.4rem;
+}
+
