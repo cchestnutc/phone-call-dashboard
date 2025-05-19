@@ -88,8 +88,8 @@ function App() {
           <MonthlyCallVolumeChart title="Call Volume" calls={filteredCalls} />
         </div>
       </div>
-
-      </* div className="details-table">
+	{/*
+      <div className="details-table">
         <table>
           <thead>
             <tr>
@@ -116,7 +116,8 @@ function App() {
             ))}
           </tbody>
         </table>
-      </div */>
+      </div >
+	*/}
     </div>
   );
 }
