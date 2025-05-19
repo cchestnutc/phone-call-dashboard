@@ -4,10 +4,16 @@ import { collection, getDocs } from "firebase/firestore";
 import AgentSummary from "./components/AgentSummary";
 import HourlyBreakdown from "./components/HourlyBreakdown";
 import MonthlyCallVolumeChart from "./components/MonthlyCallVolumeChart";
+import FilterBar from "./components/FilterBar"; // New
 import './App.css';
 
 function App() {
   const [calls, setCalls] = useState([]);
+  const [filteredCalls, setFilteredCalls] = useState([]);
+
+  const [selectedAgents, setSelectedAgents] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState("");
+  const [selectedWeek, setSelectedWeek] = useState("");
 
   useEffect(() => {
     const fetchData = async () => {
@@ -22,20 +28,59 @@ function App() {
     fetchData();
   }, []);
 
+  useEffect(() => {
+    let data = [...calls];
+
+    if (selectedAgents.length > 0) {
+      data = data.filter(call => selectedAgents.includes(call.agentName));
+    }
+
+    if (selectedMonth) {
+      data = data.filter(call => {
+        const date = new Date(call.startDate);
+        return date.getMonth() + 1 === Number(selectedMonth);
+      });
+    }
+
+    if (selectedWeek) {
+      data = data.filter(call => {
+        const date = new Date(call.startDate);
+        const week = Math.ceil(date.getDate() / 7);
+        return week === Number(selectedWeek);
+      });
+    }
+
+    setFilteredCalls(data);
+  }, [calls, selectedAgents, selectedMonth, selectedWeek]);
+
+  const uniqueAgents = [...new Set(calls.map(call => call.agentName))];
+
   return (
     <div className="dashboard-container">
       <h1 className="dashboard-title">Phone Call Dashboard</h1>
+
+      <FilterBar
+        agents={uniqueAgents}
+        selectedAgents={selectedAgents}
+        onAgentChange={setSelectedAgents}
+        selectedMonth={selectedMonth}
+        onMonthChange={setSelectedMonth}
+        selectedWeek={selectedWeek}
+        onWeekChange={setSelectedWeek}
+      />
+
       <div className="summary-breakdown-container">
         <div className="agent-summary">
-          <AgentSummary calls={calls} />
+          <AgentSummary calls={filteredCalls} />
         </div>
         <div className="hourly-breakdown">
-          <HourlyBreakdown calls={calls} />
+          <HourlyBreakdown calls={filteredCalls} />
         </div>
         <div className="monthly-chart">
-          <MonthlyCallVolumeChart calls={calls} />
+          <MonthlyCallVolumeChart title="Call Volume" calls={filteredCalls} />
         </div>
       </div>
+
       <div className="details-table">
         <table>
           <thead>
@@ -50,7 +95,7 @@ function App() {
             </tr>
           </thead>
           <tbody>
-            {calls.map(call => (
+            {filteredCalls.map(call => (
               <tr key={call.id}>
                 <td>{call.agentName}</td>
                 <td>{call.startDate}</td>
@@ -69,8 +114,3 @@ function App() {
 }
 
 export default App;
-
-
-
-
-
