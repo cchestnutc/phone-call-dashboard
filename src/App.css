@@ -14,15 +14,17 @@
 /* Flex layout for three side-by-side sections */
 .summary-breakdown-container {
   display: flex;
-  gap: 2rem;
+  justify-content: space-between;
+  gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 40px;
 }
 
-/* Each section takes about 1/3 of the space */
+/* Each section slightly narrower */
 .agent-summary, .hourly-breakdown, .monthly-chart {
-  flex: 1 1 30%;
-  min-width: 300px;
+  flex: 1;
+  min-width: 250px;
+  max-width: 31%;
 }
 
 /* Table styling for all tables */
@@ -30,11 +32,12 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
+  font-size: 0.85rem; /* Slightly smaller text */
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 10px;
+  padding: 8px; /* reduced padding */
   text-align: center;
 }
 
@@ -47,5 +50,4 @@ th {
 .details-table {
   margin-bottom: 40px;
 }
-
 
