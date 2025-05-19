@@ -75,8 +75,6 @@ function App() {
         onMonthChange={setSelectedMonth}
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
-        selectedWeek={selectedWeek}
-        onWeekChange={setSelectedWeek}
       />
 
       <div className="summary-breakdown-container">

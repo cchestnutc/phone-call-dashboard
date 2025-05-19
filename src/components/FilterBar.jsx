@@ -67,15 +67,6 @@ const FilterBar = ({
         />
       </div>
 
-      <div className="filter-group">
-        <label>Week:</label>
-        <Select
-          options={weekOptions}
-          isMulti
-          value={weekOptions.filter(opt => selectedWeek.includes(opt.value))}
-          onChange={(selected) => onWeekChange(selected.map(opt => opt.value))}
-        />
-      </div>
     </div>
   );
 };
