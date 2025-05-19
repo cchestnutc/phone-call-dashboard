@@ -22,14 +22,14 @@ const colorPalettes = [
 ];
 
 const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
-  // Group by month + year
   const yearMonthMap = {};
   const years = new Set();
 
+  // Build data map: { "2024-1": 12, ... } and collect all years
   calls.forEach(call => {
     const date = new Date(call.startDate);
     if (isNaN(date)) return;
-    const month = date.getMonth(); // 0–11
+    const month = date.getMonth(); // 0-11
     const year = date.getFullYear();
     const key = `${year}-${month}`;
     yearMonthMap[key] = (yearMonthMap[key] || 0) + 1;
@@ -38,28 +38,41 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
 
   const sortedYears = Array.from(years).sort();
 
-  // Build data structure: [{ month: "Jan", "2024": 10, "2025": 15 }, ...]
+  // Build chart data per month, only if at least one year has data
   const chartData = monthLabels.map((label, monthIndex) => {
+    let hasValue = false;
     const entry = { month: label };
+
     sortedYears.forEach(year => {
       const key = `${year}-${monthIndex}`;
-      entry[year] = yearMonthMap[key] || 0;
+      const count = yearMonthMap[key] || 0;
+      entry[year] = count;
+      if (count > 0) hasValue = true;
     });
-    return entry;
-  });
+
+    return hasValue ? entry : null;
+  }).filter(Boolean); // Remove months with all 0s
 
   return (
     <div>
       <h2>{title}</h2>
-      <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={chartData}>
+      <ResponsiveContainer width="100%" height={350}>
+        <BarChart
+          data={chartData}
+          margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+        >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
           <YAxis />
           <Tooltip />
           <Legend />
           {sortedYears.map((year, i) => (
-            <Bar key={year} dataKey={year} fill={colorPalettes[i % colorPalettes.length]}>
+            <Bar
+              key={year}
+              dataKey={year}
+              fill={colorPalettes[i % colorPalettes.length]}
+              isAnimationActive={false}
+            >
               <LabelList dataKey={year} position="top" />
             </Bar>
           ))}

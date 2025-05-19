@@ -20,11 +20,26 @@
   margin-bottom: 40px;
 }
 
-/* Each section slightly narrower */
-.agent-summary, .hourly-breakdown, .monthly-chart {
+/* Adjusted widths: Call Volume gets more space */
+.agent-summary, .hourly-breakdown {
   flex: 1;
   min-width: 250px;
-  max-width: 31%;
+  max-width: 30%;
+}
+
+.monthly-chart {
+  flex: 2;
+  min-width: 600px;
+  max-width: 100%;
+}
+
+/* Center and shrink section titles */
+.agent-summary h2,
+.hourly-breakdown h2,
+.monthly-chart h2 {
+  font-size: 1.25rem;
+  text-align: center;
+  margin-bottom: 0.5rem;
 }
 
 /* Table styling for all tables */
@@ -32,12 +47,12 @@ table {
   width: 100%;
   border-collapse: collapse;
   margin-top: 10px;
-  font-size: 0.85rem; /* Slightly smaller text */
+  font-size: 0.85rem;
 }
 
 th, td {
   border: 1px solid #ddd;
-  padding: 8px; /* reduced padding */
+  padding: 8px;
   text-align: center;
 }
 
@@ -50,4 +65,5 @@ th {
 .details-table {
   margin-bottom: 40px;
 }
+
 
