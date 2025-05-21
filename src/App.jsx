@@ -66,6 +66,7 @@ function App() {
         onMonthChange={setSelectedMonth}
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
+	calls={calls}
       />
 
       <div className="summary-breakdown-container">
