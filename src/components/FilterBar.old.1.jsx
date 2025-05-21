@@ -11,34 +11,16 @@ const FilterBar = ({
   selectedYear,
   onYearChange,
   selectedWeek,
-  onWeekChange,
-  calls // Make sure to pass your call data to this prop
+  onWeekChange
 }) => {
   const currentYear = new Date().getFullYear();
 
-  // Month options
   const monthOptions = [...Array(12)].map((_, i) => ({
     value: i + 1,
     label: new Date(0, i).toLocaleString("default", { month: "long" })
   }));
 
-  // Dynamically get unique years from call data
-  const extractedYears = Array.from(
-    new Set(
-      (calls || [])
-        .map(call => {
-          const date = new Date(call.startDate);
-          return isNaN(date) ? null : date.getFullYear();
-        })
-        .filter(Boolean)
-    )
-  ).sort((a, b) => b - a);
-
-  // Fallback if no valid years found
-  const fallbackYears = [currentYear - 1, currentYear, currentYear + 1];
-  const years = extractedYears.length > 0 ? extractedYears : fallbackYears;
-
-  const yearOptions = years.map(y => ({
+  const yearOptions = [currentYear - 1, currentYear, currentYear + 1].map(y => ({
     value: y,
     label: `${y}`
   }));
@@ -84,6 +66,7 @@ const FilterBar = ({
           onChange={(selected) => onYearChange(selected.map(opt => opt.value))}
         />
       </div>
+
     </div>
   );
 };
