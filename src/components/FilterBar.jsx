@@ -10,8 +10,6 @@ const FilterBar = ({
   onMonthChange,
   selectedYear,
   onYearChange,
-  selectedWeek,
-  onWeekChange,
   calls // Make sure to pass your call data to this prop
 }) => {
   const currentYear = new Date().getFullYear();
@@ -22,7 +20,10 @@ const FilterBar = ({
     label: new Date(0, i).toLocaleString("default", { month: "long" })
   }));
 
-  // Dynamically get unique years from call data
+  // Years you want always included in the filter
+  const requiredYears = [2022, 2023];
+
+  // Extract years from calls data
   const extractedYears = Array.from(
     new Set(
       (calls || [])
@@ -32,11 +33,16 @@ const FilterBar = ({
         })
         .filter(Boolean)
     )
-  ).sort((a, b) => b - a);
+  );
 
-  // Fallback if no valid years found
+  // Combine extracted years with requiredYears, remove duplicates, and sort descending
+  const combinedYears = Array.from(new Set([...extractedYears, ...requiredYears])).sort((a, b) => b - a);
+
+  // Fallback if no valid years found at all
   const fallbackYears = [currentYear - 1, currentYear, currentYear + 1];
-  const years = extractedYears.length > 0 ? extractedYears : fallbackYears;
+
+  // Final years used in filter dropdown
+  const years = combinedYears.length > 0 ? combinedYears : fallbackYears;
 
   const yearOptions = years.map(y => ({
     value: y,
@@ -61,7 +67,7 @@ const FilterBar = ({
           options={agentOptions}
           isMulti
           value={agentOptions.filter(opt => selectedAgents.includes(opt.value))}
-          onChange={(selected) => onAgentChange(selected.map(opt => opt.value))}
+          onChange={(selected) => onAgentChange(selected ? selected.map(opt => opt.value) : [])}
         />
       </div>
 
@@ -71,7 +77,7 @@ const FilterBar = ({
           options={monthOptions}
           isMulti
           value={monthOptions.filter(opt => selectedMonth.includes(opt.value))}
-          onChange={(selected) => onMonthChange(selected.map(opt => opt.value))}
+          onChange={(selected) => onMonthChange(selected ? selected.map(opt => opt.value) : [])}
         />
       </div>
 
@@ -81,7 +87,7 @@ const FilterBar = ({
           options={yearOptions}
           isMulti
           value={yearOptions.filter(opt => selectedYear.includes(opt.value))}
-          onChange={(selected) => onYearChange(selected.map(opt => opt.value))}
+          onChange={(selected) => onYearChange(selected ? selected.map(opt => opt.value) : [])}
         />
       </div>
     </div>
@@ -89,4 +95,3 @@ const FilterBar = ({
 };
 
 export default FilterBar;
-
