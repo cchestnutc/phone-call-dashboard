@@ -8,11 +8,13 @@ import FilterBar from "./components/FilterBar";
 import './App.css';
 
 function App() {
+  const currentMonth = new Date().getMonth() + 1; // 1-based month number
+
   const [calls, setCalls] = useState([]);
   const [filteredCalls, setFilteredCalls] = useState([]);
 
   const [selectedAgents, setSelectedAgents] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState([currentMonth]); // default to current month
   const [selectedYear, setSelectedYear] = useState([]);
 
   useEffect(() => {
@@ -66,7 +68,7 @@ function App() {
         onMonthChange={setSelectedMonth}
         selectedYear={selectedYear}
         onYearChange={setSelectedYear}
-	calls={calls}
+        calls={calls}
       />
 
       <div className="summary-breakdown-container">
@@ -81,41 +83,8 @@ function App() {
         </div>
       </div>
 
-      {/* 
-      <div className="details-table">
-        <table>
-          <thead>
-            <tr>
-              <th>Agent</th>
-              <th>Start Date</th>
-              <th>Start Time</th>
-              <th>End Date</th>
-              <th>End Time</th>
-              <th>Duration</th>
-              <th>Talk Time</th>
-            </tr>
-          </thead>
-          <tbody>
-            {filteredCalls.map(call => (
-              <tr key={call.id}>
-                <td>{call.agentName}</td>
-                <td>{call.startDate}</td>
-                <td>{call.startTime}</td>
-                <td>{call.endDate}</td>
-                <td>{call.endTime}</td>
-                <td>{call.duration}</td>
-                <td>{call.talkTime}</td>
-              </tr>
-            ))}
-          </tbody>
-        </table>
-      </div>
-      */}
-
     </div>
   );
 }
 
 export default App;
-
-
