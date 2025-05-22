@@ -1,5 +1,5 @@
 .dashboard-container {
-  max-width: 1200px;
+  max-width: 1400px; /* Increased max width for wider screens */
   margin: 0 auto;
   padding: 40px;
   font-family: Arial, sans-serif;
@@ -18,19 +18,20 @@
   gap: 1rem;
   flex-wrap: wrap;
   margin-bottom: 40px;
+  padding: 0 20px; /* Added horizontal padding for breathing room */
 }
 
-/* Adjusted widths: Call Volume gets more space */
+/* Adjusted flex properties for flexible widths */
 .agent-summary, .hourly-breakdown {
-  flex: 1;
+  flex: 1 1 30%; /* Grow and shrink with base 30% */
   min-width: 250px;
-  max-width: 30%;
+  max-width: none;
 }
 
 .monthly-chart {
-  flex: 2;
+  flex: 2 1 60%; /* Twice the size of others */
   min-width: 600px;
-  max-width: 100%;
+  max-width: none;
 }
 
 /* Center and shrink section titles */
@@ -65,5 +66,3 @@ th {
 .details-table {
   margin-bottom: 40px;
 }
-
-
