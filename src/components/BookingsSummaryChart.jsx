@@ -9,7 +9,7 @@ import {
   Legend
 } from "recharts";
 
-const BookingsSummaryChart = ({ bookings }) => {
+const BookingsSummaryChart = ({ bookings-appointments }) => {
   // Count bookings by service
   const serviceCount = bookings.reduce((acc, { service }) => {
     if (!service) return acc;
