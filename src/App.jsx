@@ -17,7 +17,6 @@ function App() {
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState([]);
   const [selectedYear, setSelectedYear] = useState([]);
-  const [selectedServices, setSelectedServices] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -61,17 +60,16 @@ function App() {
       const date = new Date(booking.start);
       const yearMatch = selectedYear.length === 0 || selectedYear.includes(date.getFullYear());
       const monthMatch = selectedMonth.length === 0 || selectedMonth.includes(date.getMonth() + 1);
-      const serviceMatch = selectedServices.length === 0 || selectedServices.includes(booking.service);
-      return yearMatch && monthMatch && serviceMatch;
+      return yearMatch && monthMatch;
     });
     setFilteredBookings(filtered);
-  }, [bookings, selectedYear, selectedMonth, selectedServices]);
+  }, [bookings, selectedYear, selectedMonth]);
 
   return (
     <div className="dashboard-container">
       <h1 className="dashboard-title">Help Desk Dashboard</h1>
       <FilterBar
-	agents={calls.map(call => call.agent).filter((v, i, a) => v && a.indexOf(v) === i)} // NEW
+        agents={calls.map(call => call.agent).filter((v, i, a) => v && a.indexOf(v) === i)}
         calls={calls}
         bookings={bookings}
         selectedAgents={selectedAgents}
@@ -80,8 +78,6 @@ function App() {
         setSelectedMonth={setSelectedMonth}
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
-        selectedServices={selectedServices}
-        setSelectedServices={setSelectedServices}
       />
       <div className="summary-breakdown-container">
         <div className="agent-summary">

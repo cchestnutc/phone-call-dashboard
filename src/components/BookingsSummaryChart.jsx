@@ -1,44 +1,37 @@
 import React from "react";
 import {
-  BarChart, Bar, XAxis, YAxis, Tooltip, Legend, ResponsiveContainer
+  BarChart,
+  Bar,
+  XAxis,
+  YAxis,
+  Tooltip,
+  ResponsiveContainer,
+  Legend
 } from "recharts";
 
-const monthLabels = ["Jan", "Feb", "Mar", "Apr", "May", "Jun", 
-                     "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"];
-
-function summarizeBookings(bookings) {
-  const monthlyData = {};
-
-  bookings.forEach(({ start, service }) => {
-    if (!start || !service) return;
-    const date = new Date(start);
-    if (isNaN(date)) return;
-
-    const month = `${date.getFullYear()}-${String(date.getMonth() + 1).padStart(2, "0")}`;
-    if (!monthlyData[month]) monthlyData[month] = { month: monthLabels[date.getMonth()] + " " + date.getFullYear() };
-
-    monthlyData[month][service] = (monthlyData[month][service] || 0) + 1;
-  });
-
-  return Object.values(monthlyData);
-}
-
 const BookingsSummaryChart = ({ bookings }) => {
-  const data = summarizeBookings(bookings);
-  const serviceTypes = [...new Set(bookings.map(b => b.service).filter(Boolean))];
+  // Count bookings by service
+  const serviceCount = bookings.reduce((acc, { service }) => {
+    if (!service) return acc;
+    acc[service] = (acc[service] || 0) + 1;
+    return acc;
+  }, {});
+
+  const chartData = Object.entries(serviceCount).map(([service, count]) => ({
+    service,
+    count
+  }));
 
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>Monthly Booking Summary</h2>
+      <h2 style={{ textAlign: "center" }}>Bookings This Month: {bookings.length}</h2>
       <ResponsiveContainer width="100%" height={300}>
-        <BarChart data={data} margin={{ top: 20, right: 30, left: 20, bottom: 5 }}>
-          <XAxis dataKey="month" />
+        <BarChart data={chartData}>
+          <XAxis dataKey="service" />
           <YAxis />
           <Tooltip />
           <Legend />
-          {serviceTypes.map((service, idx) => (
-            <Bar key={service} dataKey={service} stackId="a" fill={`hsl(${(idx * 47) % 360}, 70%, 60%)`} />
-          ))}
+          <Bar dataKey="count" fill="#4e79a7" />
         </BarChart>
       </ResponsiveContainer>
     </div>

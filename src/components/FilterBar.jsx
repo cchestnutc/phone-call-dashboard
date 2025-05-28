@@ -11,9 +11,7 @@ const FilterBar = ({
   selectedMonth,
   setSelectedMonth,
   selectedYear,
-  setSelectedYear,
-  selectedServices,
-  setSelectedServices
+  setSelectedYear
 }) => {
   const currentYear = new Date().getFullYear();
 
@@ -47,13 +45,6 @@ const FilterBar = ({
     label: agent
   }));
 
-  const serviceOptions = Array.from(
-    new Set((bookings || []).map(b => b.service).filter(Boolean))
-  ).map(service => ({
-    value: service,
-    label: service
-  }));
-
   return (
     <div className="filter-bar-horizontal">
       <div className="filter-group">
@@ -85,19 +76,10 @@ const FilterBar = ({
           onChange={(selected) => setSelectedYear(selected ? selected.map(opt => opt.value) : [])}
         />
       </div>
-
-      <div className="filter-group">
-        <label>Service:</label>
-        <Select
-          options={serviceOptions}
-          isMulti
-          value={serviceOptions.filter(opt => selectedServices.includes(opt.value))}
-          onChange={(selected) => setSelectedServices(selected ? selected.map(opt => opt.value) : [])}
-        />
-      </div>
     </div>
   );
 };
 
 export default FilterBar;
+
 
