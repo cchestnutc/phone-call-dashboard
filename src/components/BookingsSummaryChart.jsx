@@ -23,7 +23,8 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
       }));
 
       const filtered = data.filter(booking => {
-        const date = new Date(booking.start);
+        if (!booking.start || !booking.start.toDate) return false;
+        const date = booking.start.toDate();
         const yearMatch = Array.isArray(selectedBookingYear) && (selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear()));
         const monthMatch = Array.isArray(selectedBookingMonth) && (selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1));
         return yearMatch && monthMatch;
@@ -35,10 +36,11 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
     fetchBookings();
   }, [selectedBookingMonth, selectedBookingYear]);
 
-  // Count bookings by service
+  // Normalize service names by trimming after the dash
   const serviceCount = bookings.reduce((acc, { service }) => {
     if (!service) return acc;
-    acc[service] = (acc[service] || 0) + 1;
+    const normalizedService = service.split("-")[0].trim();
+    acc[normalizedService] = (acc[normalizedService] || 0) + 1;
     return acc;
   }, {});
 
