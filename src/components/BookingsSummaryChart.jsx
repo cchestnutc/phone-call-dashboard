@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect, useState } from "react";
 import {
   BarChart,
   Bar,
@@ -8,8 +8,33 @@ import {
   ResponsiveContainer,
   Legend
 } from "recharts";
+import { collection, getDocs } from "firebase/firestore";
+import { bookingsDb } from "../firebase";
 
-const BookingsSummaryChart = ({ bookings }) => {
+const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => {
+  const [bookings, setBookings] = useState([]);
+
+  useEffect(() => {
+    const fetchBookings = async () => {
+      const snapshot = await getDocs(collection(bookingsDb, "bookings-appointments"));
+      const data = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+
+      const filtered = data.filter(booking => {
+        const date = new Date(booking.start);
+        const yearMatch = selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear());
+        const monthMatch = selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1);
+        return yearMatch && monthMatch;
+      });
+
+      setBookings(filtered);
+    };
+
+    fetchBookings();
+  }, [selectedBookingMonth, selectedBookingYear]);
+
   // Count bookings by service
   const serviceCount = bookings.reduce((acc, { service }) => {
     if (!service) return acc;
@@ -39,4 +64,5 @@ const BookingsSummaryChart = ({ bookings }) => {
 };
 
 export default BookingsSummaryChart;
+
 
