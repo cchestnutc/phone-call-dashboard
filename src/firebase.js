@@ -29,6 +29,5 @@ const bookingsApp = getApps().find(app => app.name === "bookingsApp")
   || initializeApp(bookingsConfig, "bookingsApp");
 
 // Firestore instances
-export const db = getFirestore(primaryApp);        // phone_calls
-export const bookingsDb = getFirestore(bookingsApp); // bookings-appointments
-ore(app);
+export const db = getFirestore(primaryApp);           // phone_calls
+export const bookingsDb = getFirestore(bookingsApp);  // bookings-appointments
