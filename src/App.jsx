@@ -71,6 +71,7 @@ function App() {
     <div className="dashboard-container">
       <h1 className="dashboard-title">Help Desk Dashboard</h1>
       <FilterBar
+	agents={calls.map(call => call.agent).filter((v, i, a) => v && a.indexOf(v) === i)} // NEW
         calls={calls}
         bookings={bookings}
         selectedAgents={selectedAgents}
