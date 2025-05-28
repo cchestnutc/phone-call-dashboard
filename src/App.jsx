@@ -1,15 +1,13 @@
 import React, { useEffect, useState } from "react";
-import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
 import { db, bookingsDb } from "./firebase";
-import { collection, getDocs } from "firebase/firestore";
 import AgentSummary from "./components/AgentSummary";
 import HourlyBreakdown from "./components/HourlyBreakdown";
 import MonthlyCallVolumeChart from "./components/MonthlyCallVolumeChart";
 import BookingsSummaryChart from "./components/BookingsSummaryChart";
 import FilterBar from "./components/FilterBar";
-import BookingsFilterBar from "./components/BookingsFilterBar";
-import './App.css';
+import BookingFilterBar from "./components/BookingFilterBar";
+import "./App.css";
 
 function App() {
   const [calls, setCalls] = useState([]);
@@ -25,25 +23,19 @@ function App() {
   const [selectedBookingYear, setSelectedBookingYear] = useState([]);
 
   useEffect(() => {
-    const fetchData = async () => {
-      const querySnapshot = await getDocs(collection(db, "phone_calls"));
-      const callData = querySnapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+    const fetchCalls = async () => {
+      const snapshot = await getDocs(collection(db, "phone_calls"));
+      const callData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setCalls(callData);
     };
 
-    fetchData();
+    fetchCalls();
   }, []);
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const snapshot = await getDocs(collection(db, "bookings-appointments"));
-      const data = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data()
-      }));
+      const snapshot = await getDocs(collection(bookingsDb, "bookings-appointments"));
+      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
       setBookings(data);
     };
 
@@ -62,7 +54,7 @@ function App() {
   }, [calls, selectedYear, selectedMonth, selectedAgents]);
 
   useEffect(() => {
-    const snapshot = await getDocs(collection(bookingsDb, "bookings-appointments"));
+    const filtered = bookings.filter(booking => {
       const date = new Date(booking.start);
       const yearMatch = selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear());
       const monthMatch = selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1);
@@ -74,6 +66,7 @@ function App() {
   return (
     <div className="dashboard-container">
       <h1 className="dashboard-title">Help Desk Dashboard</h1>
+
       <FilterBar
         agents={calls.map(call => call.agent).filter((v, i, a) => v && a.indexOf(v) === i)}
         calls={calls}
@@ -84,6 +77,7 @@ function App() {
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
       />
+
       <div className="summary-breakdown-container">
         <div className="agent-summary">
           <AgentSummary calls={filteredCalls} />
@@ -95,15 +89,20 @@ function App() {
           <MonthlyCallVolumeChart calls={filteredCalls} />
         </div>
       </div>
+
+      <BookingFilterBar
+        bookings={bookings}
+        selectedBookingMonth={selectedBookingMonth}
+        setSelectedBookingMonth={setSelectedBookingMonth}
+        selectedBookingYear={selectedBookingYear}
+        setSelectedBookingYear={setSelectedBookingYear}
+      />
+
       <div className="monthly-chart">
-        <BookingsFilterBar
-          bookings={bookings}
-          selectedMonth={selectedBookingMonth}
-          setSelectedMonth={setSelectedBookingMonth}
-          selectedYear={selectedBookingYear}
-          setSelectedYear={setSelectedBookingYear}
+        <BookingsSummaryChart
+          selectedBookingMonth={selectedBookingMonth}
+          selectedBookingYear={selectedBookingYear}
         />
-        <BookingsSummaryChart bookings={filteredBookings} />
       </div>
     </div>
   );
