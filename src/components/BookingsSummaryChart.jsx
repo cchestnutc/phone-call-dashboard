@@ -9,7 +9,7 @@ import {
   Legend
 } from "recharts";
 
-const BookingsSummaryChart = ({ bookings-appointments }) => {
+const BookingsSummaryChart = ({ bookings }) => {
   // Count bookings by service
   const serviceCount = bookings.reduce((acc, { service }) => {
     if (!service) return acc;
@@ -24,7 +24,7 @@ const BookingsSummaryChart = ({ bookings-appointments }) => {
 
   return (
     <div>
-      <h2 style={{ textAlign: "center" }}>Bookings This Month: {bookings.length}</h2>
+      <h2 style={{ textAlign: "center" }}>Total Bookings: {bookings.length}</h2>
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData}>
           <XAxis dataKey="service" />
@@ -39,3 +39,4 @@ const BookingsSummaryChart = ({ bookings-appointments }) => {
 };
 
 export default BookingsSummaryChart;
+

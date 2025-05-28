@@ -6,6 +6,7 @@ import HourlyBreakdown from "./components/HourlyBreakdown";
 import MonthlyCallVolumeChart from "./components/MonthlyCallVolumeChart";
 import BookingsSummaryChart from "./components/BookingsSummaryChart";
 import FilterBar from "./components/FilterBar";
+import BookingsFilterBar from "./components/BookingsFilterBar";
 import './App.css';
 
 function App() {
@@ -17,6 +18,9 @@ function App() {
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState([]);
   const [selectedYear, setSelectedYear] = useState([]);
+
+  const [selectedBookingMonth, setSelectedBookingMonth] = useState([]);
+  const [selectedBookingYear, setSelectedBookingYear] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -58,12 +62,12 @@ function App() {
   useEffect(() => {
     const filtered = bookings.filter(booking => {
       const date = new Date(booking.start);
-      const yearMatch = selectedYear.length === 0 || selectedYear.includes(date.getFullYear());
-      const monthMatch = selectedMonth.length === 0 || selectedMonth.includes(date.getMonth() + 1);
+      const yearMatch = selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear());
+      const monthMatch = selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1);
       return yearMatch && monthMatch;
     });
     setFilteredBookings(filtered);
-  }, [bookings, selectedYear, selectedMonth]);
+  }, [bookings, selectedBookingYear, selectedBookingMonth]);
 
   return (
     <div className="dashboard-container">
@@ -71,7 +75,6 @@ function App() {
       <FilterBar
         agents={calls.map(call => call.agent).filter((v, i, a) => v && a.indexOf(v) === i)}
         calls={calls}
-        bookings={bookings}
         selectedAgents={selectedAgents}
         setSelectedAgents={setSelectedAgents}
         selectedMonth={selectedMonth}
@@ -91,6 +94,13 @@ function App() {
         </div>
       </div>
       <div className="monthly-chart">
+        <BookingsFilterBar
+          bookings={bookings}
+          selectedMonth={selectedBookingMonth}
+          setSelectedMonth={setSelectedBookingMonth}
+          selectedYear={selectedBookingYear}
+          setSelectedYear={setSelectedBookingYear}
+        />
         <BookingsSummaryChart bookings={filteredBookings} />
       </div>
     </div>
@@ -98,4 +108,3 @@ function App() {
 }
 
 export default App;
-
