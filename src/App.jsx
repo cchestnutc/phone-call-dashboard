@@ -4,18 +4,20 @@ import { collection, getDocs } from "firebase/firestore";
 import AgentSummary from "./components/AgentSummary";
 import HourlyBreakdown from "./components/HourlyBreakdown";
 import MonthlyCallVolumeChart from "./components/MonthlyCallVolumeChart";
+import BookingsSummaryChart from "./components/BookingsSummaryChart";
 import FilterBar from "./components/FilterBar";
 import './App.css';
 
 function App() {
-  const currentMonth = new Date().getMonth() + 1; // 1-based month number
-
   const [calls, setCalls] = useState([]);
   const [filteredCalls, setFilteredCalls] = useState([]);
+  const [bookings, setBookings] = useState([]);
+  const [filteredBookings, setFilteredBookings] = useState([]);
 
   const [selectedAgents, setSelectedAgents] = useState([]);
-  const [selectedMonth, setSelectedMonth] = useState([currentMonth]); // default to current month
+  const [selectedMonth, setSelectedMonth] = useState([]);
   const [selectedYear, setSelectedYear] = useState([]);
+  const [selectedServices, setSelectedServices] = useState([]);
 
   useEffect(() => {
     const fetchData = async () => {
@@ -31,46 +33,55 @@ function App() {
   }, []);
 
   useEffect(() => {
-    let data = [...calls];
+    const fetchBookings = async () => {
+      const snapshot = await getDocs(collection(db, "bookings-appointments"));
+      const data = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setBookings(data);
+    };
 
-    if (selectedAgents.length > 0) {
-      data = data.filter(call => selectedAgents.includes(call.agentName));
-    }
+    fetchBookings();
+  }, []);
 
-    if (selectedMonth.length > 0) {
-      data = data.filter(call => {
-        const date = new Date(call.startDate);
-        return selectedMonth.includes(date.getMonth() + 1);
-      });
-    }
+  useEffect(() => {
+    const filtered = calls.filter(call => {
+      const date = new Date(call.startDate);
+      const yearMatch = selectedYear.length === 0 || selectedYear.includes(date.getFullYear());
+      const monthMatch = selectedMonth.length === 0 || selectedMonth.includes(date.getMonth() + 1);
+      const agentMatch = selectedAgents.length === 0 || selectedAgents.includes(call.agent);
+      return yearMatch && monthMatch && agentMatch;
+    });
+    setFilteredCalls(filtered);
+  }, [calls, selectedYear, selectedMonth, selectedAgents]);
 
-    if (selectedYear.length > 0) {
-      data = data.filter(call => {
-        const date = new Date(call.startDate);
-        return selectedYear.includes(date.getFullYear());
-      });
-    }
-
-    setFilteredCalls(data);
-  }, [calls, selectedAgents, selectedMonth, selectedYear]);
-
-  const uniqueAgents = [...new Set(calls.map(call => call.agentName))];
+  useEffect(() => {
+    const filtered = bookings.filter(booking => {
+      const date = new Date(booking.start);
+      const yearMatch = selectedYear.length === 0 || selectedYear.includes(date.getFullYear());
+      const monthMatch = selectedMonth.length === 0 || selectedMonth.includes(date.getMonth() + 1);
+      const serviceMatch = selectedServices.length === 0 || selectedServices.includes(booking.service);
+      return yearMatch && monthMatch && serviceMatch;
+    });
+    setFilteredBookings(filtered);
+  }, [bookings, selectedYear, selectedMonth, selectedServices]);
 
   return (
     <div className="dashboard-container">
-      <h1 className="dashboard-title">Phone Call Dashboard</h1>
-
+      <h1 className="dashboard-title">Help Desk Dashboard</h1>
       <FilterBar
-        agents={uniqueAgents}
-        selectedAgents={selectedAgents}
-        onAgentChange={setSelectedAgents}
-        selectedMonth={selectedMonth}
-        onMonthChange={setSelectedMonth}
-        selectedYear={selectedYear}
-        onYearChange={setSelectedYear}
         calls={calls}
+        bookings={bookings}
+        selectedAgents={selectedAgents}
+        setSelectedAgents={setSelectedAgents}
+        selectedMonth={selectedMonth}
+        setSelectedMonth={setSelectedMonth}
+        selectedYear={selectedYear}
+        setSelectedYear={setSelectedYear}
+        selectedServices={selectedServices}
+        setSelectedServices={setSelectedServices}
       />
-
       <div className="summary-breakdown-container">
         <div className="agent-summary">
           <AgentSummary calls={filteredCalls} />
@@ -79,12 +90,15 @@ function App() {
           <HourlyBreakdown calls={filteredCalls} />
         </div>
         <div className="monthly-chart">
-          <MonthlyCallVolumeChart title="Call Volume" calls={filteredCalls} />
+          <MonthlyCallVolumeChart calls={filteredCalls} />
         </div>
       </div>
-
+      <div className="monthly-chart">
+        <BookingsSummaryChart bookings={filteredBookings} />
+      </div>
     </div>
   );
 }
 
 export default App;
+
