@@ -15,12 +15,12 @@ const primaryConfig = {
 
 // Secondary Firestore (bookings data) – replace with real values
 const bookingsConfig = {
-  apiKey: "YOUR_BOOKINGS_API_KEY",
-  authDomain: "your-bookings.firebaseapp.com",
-  projectId: "your-bookings-project-id",
-  storageBucket: "your-bookings.appspot.com",
-  messagingSenderId: "YOUR_MSG_SENDER_ID",
-  appId: "YOUR_APP_ID"
+  apiKey: "AIzaSyDHwDIQIwz7Ow3A9cSmL04LIhPFZ7mMTd4",
+  authDomain: "bookings-appointments.firebaseapp.com",
+  projectId: "bookings-appointments",
+  storageBucket: "bookings-appointments.firebasestorage.app",
+  messagingSenderId: "562749151922",
+  appId: "1:562749151922:web:8c0a0ec9a530115f07c7ab"
 };
 
 // Initialize apps
