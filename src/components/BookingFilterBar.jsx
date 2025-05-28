@@ -2,12 +2,12 @@ import React from "react";
 import Select from "react-select";
 import "./FilterBar.css";
 
-const BookingsFilterBar = ({
+const BookingFilterBar = ({
+  bookings,
   selectedBookingMonth,
   setSelectedBookingMonth,
   selectedBookingYear,
-  setSelectedBookingYear,
-  bookings = []
+  setSelectedBookingYear
 }) => {
   const currentYear = new Date().getFullYear();
 
@@ -18,16 +18,17 @@ const BookingsFilterBar = ({
 
   const extractedYears = Array.from(
     new Set(
-      (bookings || []).map(booking => {
-        const date = new Date(booking.start);
-        return isNaN(date) ? null : date.getFullYear();
-      }).filter(Boolean)
+      (bookings || [])
+        .map(b => {
+          const date = new Date(b.start);
+          return isNaN(date) ? null : date.getFullYear();
+        })
+        .filter(Boolean)
     )
-  );
+  ).sort((a, b) => b - a);
 
   const fallbackYears = [currentYear - 1, currentYear, currentYear + 1];
   const years = extractedYears.length > 0 ? extractedYears : fallbackYears;
-
   const yearOptions = years.map(y => ({ value: y, label: `${y}` }));
 
   return (
@@ -36,8 +37,11 @@ const BookingsFilterBar = ({
         <label>Booking Month:</label>
         <Select
           options={monthOptions}
-          value={monthOptions.find(opt => opt.value === selectedBookingMonth)}
-          onChange={(selected) => setSelectedBookingMonth(selected?.value || null)}
+          isMulti
+          value={monthOptions.filter(opt => selectedBookingMonth.includes(opt.value))}
+          onChange={selected =>
+            setSelectedBookingMonth(selected ? selected.map(opt => opt.value) : [])
+          }
         />
       </div>
 
@@ -45,15 +49,15 @@ const BookingsFilterBar = ({
         <label>Booking Year:</label>
         <Select
           options={yearOptions}
-          value={yearOptions.find(opt => opt.value === selectedBookingYear)}
-          onChange={(selected) => setSelectedBookingYear(selected?.value || null)}
+          isMulti
+          value={yearOptions.filter(opt => selectedBookingYear.includes(opt.value))}
+          onChange={selected =>
+            setSelectedBookingYear(selected ? selected.map(opt => opt.value) : [])
+          }
         />
       </div>
     </div>
   );
 };
 
-export default BookingsFilterBar;
-
-
-
+export default BookingFilterBar;

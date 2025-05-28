@@ -7,11 +7,12 @@ import MonthlyCallVolumeChart from "./components/MonthlyCallVolumeChart";
 import BookingsSummaryChart from "./components/BookingsSummaryChart";
 import FilterBar from "./components/FilterBar";
 import BookingFilterBar from "./components/BookingFilterBar";
-import "./App.css";
+import './App.css';
 
 function App() {
   const [calls, setCalls] = useState([]);
   const [filteredCalls, setFilteredCalls] = useState([]);
+
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
 
@@ -24,21 +25,25 @@ function App() {
 
   useEffect(() => {
     const fetchCalls = async () => {
-      const snapshot = await getDocs(collection(db, "phone_calls"));
-      const callData = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
+      const querySnapshot = await getDocs(collection(db, "phone_calls"));
+      const callData = querySnapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data(),
+      }));
       setCalls(callData);
     };
-
     fetchCalls();
   }, []);
 
   useEffect(() => {
     const fetchBookings = async () => {
       const snapshot = await getDocs(collection(bookingsDb, "bookings-appointments"));
-      const data = snapshot.docs.map(doc => ({ id: doc.id, ...doc.data() }));
-      setBookings(data);
+      const bookingData = snapshot.docs.map(doc => ({
+        id: doc.id,
+        ...doc.data()
+      }));
+      setBookings(bookingData);
     };
-
     fetchBookings();
   }, []);
 
@@ -56,8 +61,10 @@ function App() {
   useEffect(() => {
     const filtered = bookings.filter(booking => {
       const date = new Date(booking.start);
-      const yearMatch = selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear());
-      const monthMatch = selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1);
+      const yearMatch = Array.isArray(selectedBookingYear) && 
+                        (selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear()));
+      const monthMatch = Array.isArray(selectedBookingMonth) && 
+                         (selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1));
       return yearMatch && monthMatch;
     });
     setFilteredBookings(filtered);
@@ -91,11 +98,11 @@ function App() {
       </div>
 
       <BookingFilterBar
-        bookings={bookings}
         selectedBookingMonth={selectedBookingMonth}
         setSelectedBookingMonth={setSelectedBookingMonth}
         selectedBookingYear={selectedBookingYear}
         setSelectedBookingYear={setSelectedBookingYear}
+        bookings={bookings}
       />
 
       <div className="monthly-chart">

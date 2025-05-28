@@ -24,8 +24,8 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
 
       const filtered = data.filter(booking => {
         const date = new Date(booking.start);
-        const yearMatch = selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear());
-        const monthMatch = selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1);
+        const yearMatch = Array.isArray(selectedBookingYear) && (selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear()));
+        const monthMatch = Array.isArray(selectedBookingMonth) && (selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1));
         return yearMatch && monthMatch;
       });
 
@@ -64,5 +64,3 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
 };
 
 export default BookingsSummaryChart;
-
-
