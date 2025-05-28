@@ -1,6 +1,8 @@
 import React, { useEffect, useState } from "react";
 import { db } from "./firebase";
 import { collection, getDocs } from "firebase/firestore";
+import { db, bookingsDb } from "./firebase";
+import { collection, getDocs } from "firebase/firestore";
 import AgentSummary from "./components/AgentSummary";
 import HourlyBreakdown from "./components/HourlyBreakdown";
 import MonthlyCallVolumeChart from "./components/MonthlyCallVolumeChart";
@@ -60,7 +62,7 @@ function App() {
   }, [calls, selectedYear, selectedMonth, selectedAgents]);
 
   useEffect(() => {
-    const filtered = bookings.filter(booking => {
+    const snapshot = await getDocs(collection(bookingsDb, "bookings-appointments"));
       const date = new Date(booking.start);
       const yearMatch = selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear());
       const monthMatch = selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1);
