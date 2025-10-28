@@ -1,29 +1,60 @@
-.tabs-header {
+/* Page wrapper */
+.dashboard-container {
   display: flex;
-  gap: 0.5rem;
-  border-bottom: 1px solid #d1d5db; /* gray-300 */
-  margin-bottom: 1rem;
+  flex-direction: column;
+  min-height: 100vh;
+
+  /* center children horizontally */
+  align-items: center;
+
+  /* full width background */
+  width: 100%;
+
+  background-color: #f9fafb;
+  padding: 2rem 1rem;
+  box-sizing: border-box;
 }
 
+/* Title */
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1rem;
+  color: #111827;
+}
+
+/* Tabs row */
+.tabs-header {
+  display: flex;
+  justify-content: center;     /* center the buttons in the row */
+  gap: 1rem;
+  border-bottom: 1px solid #d1d5db;
+  width: 100%;
+  max-width: 1400px;           /* keep it from stretching to infinity */
+  margin-bottom: 1.5rem;
+}
+
+/* Tab buttons */
 .tab-button {
   padding: 0.5rem 1rem;
   font-size: 0.9rem;
   font-weight: 500;
   border-radius: 0.5rem 0.5rem 0 0;
   border: 1px solid transparent;
-  background: #f3f4f6; /* gray-100 */
-  color: #6b7280;      /* gray-500 */
+  background: #f3f4f6;
+  color: #6b7280;
   cursor: pointer;
 }
 
 .tab-button:hover {
-  color: #374151;      /* gray-700 */
+  color: #374151;
 }
 
 .tab-active {
   background: #ffffff;
-  color: #111827;      /* gray-900 */
-  border-color: #d1d5db #d1d5db #ffffff #d1d5db; /* show border except bottom */
+  color: #111827;
+  border-color: #d1d5db #d1d5db #ffffff #d1d5db;
   border-style: solid;
   border-width: 1px;
 }
@@ -33,56 +64,39 @@
   color: #6b7280;
 }
 
+/* MAIN CARD BODY */
 .tab-panel {
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 0 0.75rem 0.75rem 0.75rem;
-  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
-  padding: 1rem;
-}
-.dashboard-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  background-color: #f9fafb; /* subtle gray background */
-  padding: 2rem 0;
-}
-
-.dashboard-title {
-  font-size: 2rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 1.5rem;
-}
-
-.tab-panel {
-  width: 95%;
-  max-width: 1400px; /* keeps content readable on huge screens */
   background: #ffffff;
   border: 1px solid #d1d5db;
   border-radius: 1rem;
-  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
+
+  /* <<< THIS IS KEY >>> */
+  width: 100%;
+  max-width: 1400px;
+
   padding: 2rem;
+  box-sizing: border-box;
 }
 
+/* Filter bar + content layout inside the tab */
 .summary-breakdown-container {
   display: grid;
   grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
   gap: 2rem;
   width: 100%;
-  margin-top: 1.5rem;
+  margin-top: 2rem;
+  box-sizing: border-box;
 }
 
+/* individual blocks should expand */
+.agent-summary,
+.hourly-breakdown,
 .monthly-chart {
   width: 100%;
+  min-width: 0; /* prevents overflow weirdness in flex/grid */
 }
 
-.agent-summary,
-.hourly-breakdown {
-  width: 100%;
-}
 @media (max-width: 768px) {
   .tab-panel {
     padding: 1rem;
@@ -91,9 +105,4 @@
     grid-template-columns: 1fr;
     gap: 1rem;
   }
-}
-.chart-container {
-  width: 100%;
-  margin-left: auto;
-  margin-right: auto;
 }
