@@ -83,4 +83,17 @@
 .hourly-breakdown {
   width: 100%;
 }
-
+@media (max-width: 768px) {
+  .tab-panel {
+    padding: 1rem;
+  }
+  .summary-breakdown-container {
+    grid-template-columns: 1fr;
+    gap: 1rem;
+  }
+}
+.chart-container {
+  width: 100%;
+  margin-left: auto;
+  margin-right: auto;
+}
