@@ -55,9 +55,13 @@ export default function CallsTab() {
   const agentList = calls
     .map(call => call.agent)
     .filter((v, i, a) => v && a.indexOf(v) === i);
+<div className="filters-row">
+        <FilterBar ... />
+</div>
+return (
+  <div className="calls-tab-outer">
+    <div className="calls-inner">
 
-  return (
-    <div className="flex flex-col gap-4">
       <FilterBar
         agents={agentList}
         calls={calls}
@@ -68,8 +72,7 @@ export default function CallsTab() {
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
       />
-      <div className="filters-row">
-        <FilterBar ... />
+
       <div className="summary-breakdown-container">
         <div className="agent-summary">
           <AgentSummary calls={filteredCalls} />
@@ -81,6 +84,11 @@ export default function CallsTab() {
           <MonthlyCallVolumeChart calls={filteredCalls} />
         </div>
       </div>
+
     </div>
-  );
-}
+  </div>
+);
+
+
+  
+ 
