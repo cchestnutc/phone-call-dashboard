@@ -1,68 +1,42 @@
-.dashboard-container {
-  max-width: 1400px; /* Increased max width for wider screens */
-  margin: 0 auto;
-  padding: 40px;
-  font-family: Arial, sans-serif;
-}
-
-.dashboard-title {
-  text-align: center;
-  font-size: 2rem;
-  margin-bottom: 30px;
-}
-
-/* Flex layout for three side-by-side sections */
-.summary-breakdown-container {
+.tabs-header {
   display: flex;
-  justify-content: space-between;
-  gap: 1rem;
-  flex-wrap: wrap;
-  margin-bottom: 40px;
-  padding: 0 20px; /* Added horizontal padding for breathing room */
+  gap: 0.5rem;
+  border-bottom: 1px solid #d1d5db; /* gray-300 */
+  margin-bottom: 1rem;
 }
 
-/* Adjusted flex properties for flexible widths */
-.agent-summary, .hourly-breakdown {
-  flex: 1 1 30%; /* Grow and shrink with base 30% */
-  min-width: 250px;
-  max-width: none;
+.tab-button {
+  padding: 0.5rem 1rem;
+  font-size: 0.9rem;
+  font-weight: 500;
+  border-radius: 0.5rem 0.5rem 0 0;
+  border: 1px solid transparent;
+  background: #f3f4f6; /* gray-100 */
+  color: #6b7280;      /* gray-500 */
+  cursor: pointer;
 }
 
-.monthly-chart {
-  flex: 2 1 60%; /* Twice the size of others */
-  min-width: 600px;
-  max-width: none;
+.tab-button:hover {
+  color: #374151;      /* gray-700 */
 }
 
-/* Center and shrink section titles */
-.agent-summary h2,
-.hourly-breakdown h2,
-.monthly-chart h2 {
-  font-size: 1.25rem;
-  text-align: center;
-  margin-bottom: 0.5rem;
+.tab-active {
+  background: #ffffff;
+  color: #111827;      /* gray-900 */
+  border-color: #d1d5db #d1d5db #ffffff #d1d5db; /* show border except bottom */
+  border-style: solid;
+  border-width: 1px;
 }
 
-/* Table styling for all tables */
-table {
-  width: 100%;
-  border-collapse: collapse;
-  margin-top: 10px;
-  font-size: 0.85rem;
+.tab-inactive {
+  background: #f3f4f6;
+  color: #6b7280;
 }
 
-th, td {
-  border: 1px solid #ddd;
-  padding: 8px;
-  text-align: center;
-}
-
-th {
-  background-color: #f2f2f2;
-  font-weight: bold;
-}
-
-/* Margin for details table */
-.details-table {
-  margin-bottom: 40px;
+.tab-panel {
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 0 0.75rem 0.75rem 0.75rem;
+  box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
+  padding: 1rem;
 }
