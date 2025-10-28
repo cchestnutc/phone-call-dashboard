@@ -106,3 +106,10 @@
     gap: 1rem;
   }
 }
+.filters-row {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  column-gap: 1.5rem;
+  row-gap: 1rem;
+}
