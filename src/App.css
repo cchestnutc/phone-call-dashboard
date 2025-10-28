@@ -40,3 +40,47 @@
   box-shadow: 0 1px 3px rgb(0 0 0 / 0.08);
   padding: 1rem;
 }
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  width: 100%;
+  min-height: 100vh;
+  background-color: #f9fafb; /* subtle gray background */
+  padding: 2rem 0;
+}
+
+.dashboard-title {
+  font-size: 2rem;
+  font-weight: 700;
+  text-align: center;
+  margin-bottom: 1.5rem;
+}
+
+.tab-panel {
+  width: 95%;
+  max-width: 1400px; /* keeps content readable on huge screens */
+  background: #ffffff;
+  border: 1px solid #d1d5db;
+  border-radius: 1rem;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.1);
+  padding: 2rem;
+}
+
+.summary-breakdown-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(400px, 1fr));
+  gap: 2rem;
+  width: 100%;
+  margin-top: 1.5rem;
+}
+
+.monthly-chart {
+  width: 100%;
+}
+
+.agent-summary,
+.hourly-breakdown {
+  width: 100%;
+}
+
