@@ -68,7 +68,8 @@ export default function CallsTab() {
         selectedYear={selectedYear}
         setSelectedYear={setSelectedYear}
       />
-
+      <div className="filters-row">
+        <FilterBar ... />
       <div className="summary-breakdown-container">
         <div className="agent-summary">
           <AgentSummary calls={filteredCalls} />
