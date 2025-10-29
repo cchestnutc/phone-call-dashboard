@@ -83,10 +83,23 @@ button:focus-visible {
 }
 html,
 body,
-#root,
-.dashboard-container {
+#root {
+  display: block !important;
   width: 100% !important;
   max-width: 100% !important;
   margin: 0 !important;
+  padding: 0 !important;
+  box-sizing: border-box !important;
+}
+
+/* Center the dashboard container itself */
+.dashboard-container {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  width: 100%;
+  min-height: 100vh;
+  margin: 0 auto;
   box-sizing: border-box;
 }
