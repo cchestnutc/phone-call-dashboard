@@ -1,11 +1,11 @@
-/* Reset root colors to light mode dashboard defaults */
+/* --- Global tokens / base typography --- */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color: #111827;             /* dark gray text */
-  background-color: #f9fafb;  /* light gray app background */
+  color: #111827;             /* dark text */
+  background-color: #f9fafb;  /* light gray background */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,7 +13,7 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* Make sure links still look normal if you ever render them */
+/* links */
 a {
   font-weight: 500;
   color: #4f46e5;
@@ -23,7 +23,9 @@ a:hover {
   color: #4338ca;
 }
 
-/* THIS IS THE IMPORTANT PART 🔥 */
+/* --- CRITICAL LAYOUT RESET --- */
+/* We are overriding the Vite starter's body flex behavior. */
+
 html,
 body,
 #root {
@@ -32,18 +34,27 @@ body,
   width: 100%;
   min-height: 100vh;
   box-sizing: border-box;
-
-  /* most important: DO NOT flex the body */
-  display: block;
 }
 
-/* We still want the app to be vertical layout-friendly */
+/* stop the body from acting like a flexbox container */
+body {
+  display: block !important;
+  /* we'll just inherit background from :root */
+  background-color: #f9fafb;
+  color: #111827;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+  line-height: 1.5;
+}
+
+/* make sure the React root can stretch full width */
 #root {
   display: flex;
   flex-direction: column;
-  align-items: stretch; /* let children take full width unless they center themselves */
+  align-items: stretch; /* children can choose their own centering */
+  width: 100%;
 }
 
+/* --- Headings/buttons defaults to look consistent --- */
 h1 {
   font-size: 2rem;
   line-height: 1.2;
