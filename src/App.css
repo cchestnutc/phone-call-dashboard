@@ -1,211 +1,180 @@
-/* ===== PAGE-LEVEL LAYOUT ===== */
+/* ===============================
+   App-level styles (no globals)
+   =============================== */
 
-.dashboard-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  width: 100%;
-  min-height: 100vh;
-  background-color: transparent; /* body handles bg color */
-  padding: 2rem 1rem;
-  box-sizing: border-box;
-}
-
+/* Title */
 .dashboard-title {
-  font-size: 2rem;
-  font-weight: 700;
-  text-align: center;
-  margin-bottom: 1rem;
+  font-size: 2.2rem;
   line-height: 1.2;
-  color: #111827; /* gray-900 */
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 1rem 0;
+  text-align: center; /* center the heading only */
 }
 
-/* ===== TABS HEADER (Calls / Bookings) ===== */
-
+/* Tabs row (Calls / Bookings) */
 .tabs-header {
   display: flex;
   justify-content: center;
-  gap: 1rem;
-  border-bottom: 1px solid #d1d5db; /* gray-300 */
+  align-items: center;
+  gap: 0.75rem;
   width: 100%;
-  max-width: 1400px;
-  margin-bottom: 1.5rem;
-  margin-left: auto;
-  margin-right: auto;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #e5e7eb; /* light divider */
+  box-sizing: border-box;
 }
 
 .tab-button {
+  border: 1px solid #d1d5db;
+  background-color: #f9fafb;
+  color: #111827;
+  border-radius: 8px;
   padding: 0.5rem 1rem;
-  font-size: 0.9rem;
+  font: inherit;
   font-weight: 500;
-  border-radius: 0.5rem 0.5rem 0 0;
-  border: 1px solid transparent;
-  background: #f3f4f6; /* gray-100 */
-  color: #6b7280;      /* gray-500 */
+  line-height: 1.2rem;
   cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
 
 .tab-button:hover {
-  color: #374151;      /* gray-700 */
+  background-color: #eef2ff; /* subtle hover */
+  border-color: #c7d2fe;
 }
 
 .tab-active {
-  background: #ffffff;
-  color: #111827;      /* gray-900 */
-  border-color: #d1d5db #d1d5db #ffffff #d1d5db;
-  border-style: solid;
-  border-width: 1px;
+  background-color: #ffffff;
+  border-color: #9ca3af;
+  font-weight: 600;
 }
 
 .tab-inactive {
-  background: #f3f4f6;
-  color: #6b7280;
+  background-color: #f3f4f6;
+  color: #4b5563;
 }
 
-/* ===== MAIN WHITE PANEL ===== */
+/* ===============================
+   Sections & Cards
+   =============================== */
 
+/* White content area (bookings/calls content lives inside) */
 .tab-panel {
-  background: #ffffff;
-  border: 1px solid #d1d5db;
-  border-radius: 1rem;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08);
-
   width: 100%;
-  max-width: 1400px;
-
-  padding: 2rem;
+  background: transparent; /* shell handles page background */
   box-sizing: border-box;
-
-  /* THE IMPORTANT PART ↓↓↓ */
-  margin: 0 auto;          /* center the whole white card */
 }
 
-/* Inner content column inside the white card */
+/* Inner stack that holds sections (filters + cards) */
 .tab-panel-inner {
-  max-width: 1100px;
-  margin: 0 auto; /* centers inner content */
+  width: 100%;
   display: flex;
   flex-direction: column;
-  gap: 2rem;
+  gap: 1.25rem;
+  box-sizing: border-box;
 }
 
-/* ===== FILTER BAR ROW ===== */
+/* Generic section wrapper */
+.section-block {
+  width: 100%;
+  box-sizing: border-box;
+}
 
-.filterbar-row {
+/* Filter rows (calls + bookings) */
+.filterbar-row,
+.filters-row {
   width: 100%;
   display: flex;
   flex-wrap: wrap;
-  column-gap: 2rem;
-  row-gap: 1rem;
-  align-items: flex-end;
-}
-
-/* ===== SECTION BLOCKS ===== */
-
-.section-block {
-  width: 100%;
-}
-
-.section-block h2,
-.section-block h3 {
-  margin-top: 0;
-  margin-bottom: 1rem;
-  line-height: 1.3;
-  font-size: 1.3rem;
-  font-weight: 600;
-  color: #111827;
-}
-
-/* ===== SUMMARY GRID (Agent Summary / Hourly Breakdown / Monthly Chart) ===== */
-
-/*
-  We’re using an adaptive grid:
-  - 1 column on smaller screens
-  - 2 columns on medium screens
-  - 3 columns on very wide screens
-*/
-
-.summary-breakdown-container {
-  width: 100%;
-  display: grid;
-  gap: 2rem;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center; /* centered controls */
+  margin: 0.25rem 0 0.75rem 0;
   box-sizing: border-box;
-  grid-template-columns: 1fr; /* default: single column */
 }
 
-@media (min-width: 900px) {
-  .summary-breakdown-container {
-    grid-template-columns: 1fr 1fr; /* 2 columns */
-  }
+/* ===============================
+   Tiles / Charts (full-width grid)
+   =============================== */
+
+/* The main grid for AgentSummary, HourlyBreakdown, MonthlyCallVolume, etc. */
+.summary-breakdown-container {
+  display: grid;
+  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
 }
 
-@media (min-width: 1400px) {
-  .summary-breakdown-container {
-    grid-template-columns: 1fr 1fr 1fr; /* 3 columns */
-  }
-}
-
+/* Individual cards/tiles */
 .agent-summary,
 .hourly-breakdown,
 .monthly-chart {
   width: 100%;
-  min-width: 0; /* prevents overflow forcing a weird vertical rule */
+  background: #ffffff;
+  color: #111827;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  padding: 1rem;
+  box-sizing: border-box;
 }
 
-/* ===== TABLE / DATA BLOCK STYLING ===== */
+/* Make Recharts wrappers behave nicely in cards */
+.monthly-chart .recharts-responsive-container,
+.hourly-breakdown .recharts-responsive-container {
+  width: 100% !important;  /* Recharts respects its parent; ensure parent fills */
+  height: 300px !important;
+}
 
-/* Apply this class to tables in AgentSummary and HourlyBreakdown */
-.summary-table {
+/* ===============================
+   Tables & Text
+   =============================== */
+
+.section-block h2 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+table {
   width: 100%;
   border-collapse: collapse;
   font-size: 0.95rem;
-  line-height: 1.5;
-  color: #111827;
 }
 
-.summary-table thead th {
+th, td {
   text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+  background: #f3f4f6;
   font-weight: 600;
-  padding: 0.4rem 0.75rem 0.4rem 0;
-  white-space: nowrap;
-  border-bottom: 1px solid #e5e7eb; /* gray-200 */
+  color: #374151;
 }
 
-.summary-table tbody td {
-  padding: 0.4rem 0.75rem 0.4rem 0;
-  vertical-align: top;
-  white-space: nowrap;
-}
-
-/* Provide horizontal spacing between columns so text isn't smashed */
-.summary-table th + th,
-.summary-table td + td {
-  padding-left: 1.5rem;
-}
-
-/* Slight zebra striping makes long lists easier to read */
-.summary-table tbody tr:nth-child(even) td {
-  background-color: #f9fafb;
-}
-
-/* ===== RESPONSIVE ===== */
-
-@media (max-width: 768px) {
-  .dashboard-title {
-    font-size: 1.5rem;
-    text-align: center;
+/* ===============================
+   Responsive tweaks
+   =============================== */
+@media (max-width: 1024px) {
+  .summary-breakdown-container {
+    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
   }
+}
 
-  .tab-panel {
-    padding: 1rem;
+@media (max-width: 640px) {
+  .tabs-header {
+    gap: 0.5rem;
   }
-
-  .tab-panel-inner {
-    gap: 1.5rem;
+  .tab-button {
+    padding: 0.45rem 0.8rem;
   }
-
-  .filterbar-row {
-    flex-direction: column;
-    align-items: flex-start;
+  .agent-summary,
+  .hourly-breakdown,
+  .monthly-chart {
+    padding: 0.85rem;
   }
 }
