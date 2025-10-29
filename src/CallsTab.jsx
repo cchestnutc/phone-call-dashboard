@@ -18,32 +18,27 @@ export default function CallsTab() {
   // Fetch calls from Firestore
   useEffect(() => {
     const fetchCalls = async () => {
-      const querySnapshot = await getDocs(collection(db, "phone_calls"));
-      const callData = querySnapshot.docs.map((doc) => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
+      const snap = await getDocs(collection(db, "phone_calls"));
+      const callData = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
       setCalls(callData);
     };
     fetchCalls();
   }, []);
 
-  // Apply filters
+  // Filter logic
   useEffect(() => {
     const filtered = calls.filter((call) => {
       const date = new Date(call.startDate);
 
       const yearMatch =
-        selectedYear.length === 0 ||
-        selectedYear.includes(date.getFullYear());
+        selectedYear.length === 0 || selectedYear.includes(date.getFullYear());
 
       const monthMatch =
         selectedMonth.length === 0 ||
         selectedMonth.includes(date.getMonth() + 1);
 
       const agentMatch =
-        selectedAgents.length === 0 ||
-        selectedAgents.includes(call.agent);
+        selectedAgents.length === 0 || selectedAgents.includes(call.agent);
 
       return yearMatch && monthMatch && agentMatch;
     });
@@ -51,45 +46,42 @@ export default function CallsTab() {
     setFilteredCalls(filtered);
   }, [calls, selectedYear, selectedMonth, selectedAgents]);
 
-  // Unique agent names for filter dropdown
+  // Unique agent list for FilterBar
   const agentList = calls
-    .map((call) => call.agent)
+    .map((c) => c.agent)
     .filter((v, i, a) => v && a.indexOf(v) === i);
 
   return (
     <>
-      {/* Filters */}
+      {/* Filters row (full width, centered controls) */}
       <div className="section-block">
-        <div className="filterbar-row">
-          <FilterBar
-            agents={agentList}
-            calls={calls}
-            selectedAgents={selectedAgents}
-            setSelectedAgents={setSelectedAgents}
-            selectedMonth={selectedMonth}
-            setSelectedMonth={setSelectedMonth}
-            selectedYear={selectedYear}
-            setSelectedYear={setSelectedYear}
-          />
+        <FilterBar
+          agents={agentList}
+          calls={calls}
+          selectedAgents={selectedAgents}
+          setSelectedAgents={setSelectedAgents}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          selectedYear={selectedYear}
+          setSelectedYear={setSelectedYear}
+        />
+      </div>
+
+      {/* Main tiles/cards grid (full width) */}
+      <div className="section-block">
+        <div className="summary-breakdown-container">
+          <div className="agent-summary">
+            <AgentSummary calls={filteredCalls} />
+          </div>
+
+          <div className="hourly-breakdown">
+            <HourlyBreakdown calls={filteredCalls} />
+          </div>
+
+          <div className="monthly-chart">
+            <MonthlyCallVolumeChart calls={filteredCalls} />
+          </div>
         </div>
-      </div>
-
-      {/* Agent Summary */}
-      <div className="section-block">
-        <h2>Agent Summary</h2>
-        <AgentSummary calls={filteredCalls} />
-      </div>
-
-      {/* Hourly Breakdown */}
-      <div className="section-block">
-        <h2>Hourly Call Breakdown</h2>
-        <HourlyBreakdown calls={filteredCalls} />
-      </div>
-
-      {/* Monthly Call Volume */}
-      <div className="section-block">
-        <h2>Monthly Call Volume</h2>
-        <MonthlyCallVolumeChart calls={filteredCalls} />
       </div>
     </>
   );
