@@ -1,76 +1,42 @@
-import React, { useEffect, useState } from "react";
-import { collection, getDocs } from "firebase/firestore";
-import { bookingsDb } from "./firebase";
+import React, { useState } from "react";
+import CallsTab from "./CallsTab";
+import BookingsTab from "./BookingsTab";
+import "./index.css";   // ensure global layout rules are loaded
+import "./App.css";
 
-import BookingFilterBar from "./components/BookingFilterBar";
-import BookingsSummaryChart from "./components/BookingsSummaryChart";
-
-export default function BookingsTab() {
-  const [bookings, setBookings] = useState([]);
-  const [filteredBookings, setFilteredBookings] = useState([]);
-
-  const [selectedBookingMonth, setSelectedBookingMonth] = useState([]);
-  const [selectedBookingYear, setSelectedBookingYear] = useState([]);
-
-  // Fetch bookings from Firestore
-  useEffect(() => {
-    const fetchBookings = async () => {
-      const snapshot = await getDocs(
-        collection(bookingsDb, "bookings-appointments")
-      );
-      const bookingData = snapshot.docs.map(doc => ({
-        id: doc.id,
-        ...doc.data(),
-      }));
-      setBookings(bookingData);
-    };
-    fetchBookings();
-  }, []);
-
-  // Filter logic (yours, unchanged)
-  useEffect(() => {
-    const filtered = bookings.filter(booking => {
-      const date = new Date(booking.start);
-
-      const yearMatch =
-        Array.isArray(selectedBookingYear) &&
-        (selectedBookingYear.length === 0 ||
-          selectedBookingYear.includes(date.getFullYear()));
-
-      const monthMatch =
-        Array.isArray(selectedBookingMonth) &&
-        (selectedBookingMonth.length === 0 ||
-          selectedBookingMonth.includes(date.getMonth() + 1));
-
-      return yearMatch && monthMatch;
-    });
-
-    setFilteredBookings(filtered);
-  }, [bookings, selectedBookingYear, selectedBookingMonth]);
+export default function App() {
+  const [activeTab, setActiveTab] = useState("calls");
 
   return (
-    <div className="flex flex-col gap-4">
-      <BookingFilterBar
-        selectedBookingMonth={selectedBookingMonth}
-        setSelectedBookingMonth={setSelectedBookingMonth}
-        selectedBookingYear={selectedBookingYear}
-        setSelectedBookingYear={setSelectedBookingYear}
-        bookings={bookings}
-      />
+    <div className="dashboard-shell">
+      {/* Top block: title + tabs */}
+      <div className="dashboard-header-block">
+        <h1 className="dashboard-title">Help Desk Dashboard</h1>
 
-      <div className="monthly-chart">
-        <BookingsSummaryChart
-          // Note: in your original code you only pass month/year,
-          // not the actual filtered list. I'm keeping that.
-          selectedBookingMonth={selectedBookingMonth}
-          selectedBookingYear={selectedBookingYear}
-          // If BookingsSummaryChart actually needs the filtered data,
-          // change it to: bookings={filteredBookings}
-        />
+        <div className="tabs-header">
+          <button
+            className={"tab-button " + (activeTab === "calls" ? "tab-active" : "tab-inactive")}
+            onClick={() => setActiveTab("calls")}
+          >
+            Calls
+          </button>
+
+          <button
+            className={"tab-button " + (activeTab === "bookings" ? "tab-active" : "tab-inactive")}
+            onClick={() => setActiveTab("bookings")}
+          >
+            Bookings
+          </button>
+        </div>
       </div>
 
-      {/* Optional: bookings table or detail list */}
-      {/* If you eventually want a table of individual appointments, you can render filteredBookings here. */}
+      {/* White card content area */}
+      <div className="tab-panel">
+        <div className="tab-panel-inner">
+          {activeTab === "calls" && <CallsTab />}
+          {activeTab === "bookings" && <BookingsTab />}
+        </div>
+      </div>
     </div>
   );
 }
