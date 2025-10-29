@@ -5,11 +5,9 @@
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
-
   color-scheme: light dark;
   color: rgba(255, 255, 255, 0.87);
   background-color: #242424;
-
   font-synthesis: none;
   text-rendering: optimizeLegibility;
   -webkit-font-smoothing: antialiased;
@@ -42,13 +40,11 @@ a {
   text-decoration: none;
 }
 a:hover { color: #535bf2; }
-
 h1 {
   font-size: 2.2rem;
   line-height: 1.2;
   margin-bottom: 1rem;
 }
-
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -67,7 +63,6 @@ button:focus, button:focus-visible { outline: 4px auto -webkit-focus-ring-color;
 /* ===============================
    Dashboard Layout
    =============================== */
-
 /* Main wrapper for all dashboard content */
 .dashboard-shell {
   display: flex;
@@ -95,8 +90,8 @@ button:focus, button:focus-visible { outline: 4px auto -webkit-focus-ring-color;
 /* The white “card” behind each tab’s content */
 .tab-panel {
   width: 100%;
-  max-width: 1400px;          /* center the whole card */
-  margin: 0 auto;             /* horizontally center */
+  max-width: 1400px; /* center the whole card */
+  margin: 0 auto; /* horizontally center */
   background: transparent;
   box-sizing: border-box;
 }
@@ -104,7 +99,7 @@ button:focus, button:focus-visible { outline: 4px auto -webkit-focus-ring-color;
 /* Inner stack (make sure this fills the card) */
 .tab-panel-inner {
   width: 100% !important;
-  max-width: 1400px !important;   /* match the card width */
+  max-width: 1400px !important; /* match the card width */
   margin-left: auto !important;
   margin-right: auto !important;
   display: flex !important;
@@ -155,11 +150,11 @@ button:focus, button:focus-visible { outline: 4px auto -webkit-focus-ring-color;
   :root { color: #213547; background-color: #ffffff; }
   button { background-color: #f9f9f9; color: #111827; }
 }
-
 @media (max-width: 768px) {
   .dashboard-shell { padding: 1rem; }
   .summary-breakdown-container { grid-template-columns: 1fr; }
 }
+
 /* Force the dashboard container to span the full body width */
 body {
   margin: 0 !important;
@@ -193,4 +188,3 @@ body {
   box-sizing: border-box;
   background: transparent;
 }
-
