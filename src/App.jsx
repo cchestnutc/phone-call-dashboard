@@ -1,10 +1,10 @@
 import React, { useState } from "react";
 import CallsTab from "./CallsTab";
 import BookingsTab from "./BookingsTab";
-import "./App.css"; // styles
+import "./App.css";
 
-export default function HelpDeskDashboard() {
-  const [activeTab, setActiveTab] = useState("calls"); // "calls" | "bookings"
+export default function App() {
+  const [activeTab, setActiveTab] = useState("calls");
 
   return (
     <div className="dashboard-container">
@@ -33,7 +33,7 @@ export default function HelpDeskDashboard() {
         </button>
       </div>
 
-      {/* Tab Body */}
+      {/* Centered White Card */}
       <div className="tab-panel">
         <div className="tab-panel-inner">
           {activeTab === "calls" && <CallsTab />}
@@ -41,6 +41,9 @@ export default function HelpDeskDashboard() {
         </div>
       </div>
     </div>
+  );
+}
+
   );
 }
 
