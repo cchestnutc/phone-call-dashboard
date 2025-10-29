@@ -19,7 +19,7 @@ export default function CallsTab() {
   useEffect(() => {
     const fetchCalls = async () => {
       const querySnapshot = await getDocs(collection(db, "phone_calls"));
-      const callData = querySnapshot.docs.map(doc => ({
+      const callData = querySnapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
@@ -28,9 +28,9 @@ export default function CallsTab() {
     fetchCalls();
   }, []);
 
-  // Filter logic (unchanged from your code)
+  // Apply filters
   useEffect(() => {
-    const filtered = calls.filter(call => {
+    const filtered = calls.filter((call) => {
       const date = new Date(call.startDate);
 
       const yearMatch =
@@ -51,43 +51,50 @@ export default function CallsTab() {
     setFilteredCalls(filtered);
   }, [calls, selectedYear, selectedMonth, selectedAgents]);
 
-  // Unique agent list for FilterBar
+  // Unique agent names for filter dropdown
   const agentList = calls
-    .map(call => call.agent)
+    .map((call) => call.agent)
     .filter((v, i, a) => v && a.indexOf(v) === i);
-<div className="filters-row">
-        <FilterBar ... />
-</div>
-return (
-  <div className="calls-tab-outer">
-    <div className="calls-inner">
 
-      <FilterBar
-        agents={agentList}
-        calls={calls}
-        selectedAgents={selectedAgents}
-        setSelectedAgents={setSelectedAgents}
-        selectedMonth={selectedMonth}
-        setSelectedMonth={setSelectedMonth}
-        selectedYear={selectedYear}
-        setSelectedYear={setSelectedYear}
-      />
-
-      <div className="summary-breakdown-container">
-        <div className="agent-summary">
-          <AgentSummary calls={filteredCalls} />
-        </div>
-        <div className="hourly-breakdown">
-          <HourlyBreakdown calls={filteredCalls} />
-        </div>
-        <div className="monthly-chart">
-          <MonthlyCallVolumeChart calls={filteredCalls} />
+  return (
+    <>
+      {/* Filters */}
+      <div className="section-block">
+        <div className="filterbar-row">
+          <FilterBar
+            agents={agentList}
+            calls={calls}
+            selectedAgents={selectedAgents}
+            setSelectedAgents={setSelectedAgents}
+            selectedMonth={selectedMonth}
+            setSelectedMonth={setSelectedMonth}
+            selectedYear={selectedYear}
+            setSelectedYear={setSelectedYear}
+          />
         </div>
       </div>
 
-    </div>
-  </div>
-);
+      {/* Agent Summary */}
+      <div className="section-block">
+        <h2>Agent Summary</h2>
+        <AgentSummary calls={filteredCalls} />
+      </div>
+
+      {/* Hourly Breakdown */}
+      <div className="section-block">
+        <h2>Hourly Call Breakdown</h2>
+        <HourlyBreakdown calls={filteredCalls} />
+      </div>
+
+      {/* Monthly Call Volume */}
+      <div className="section-block">
+        <h2>Monthly Call Volume</h2>
+        <MonthlyCallVolumeChart calls={filteredCalls} />
+      </div>
+    </>
+  );
+}
+
 
 
   
