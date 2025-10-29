@@ -192,3 +192,50 @@ button:focus-visible {
   flex-direction: column !important;
   gap: 2rem !important;
 }
+/* --------------------------
+   Final Global Overrides
+--------------------------- */
+html, body, #root {
+  margin: 0 !important;
+  padding: 0 !important;
+  width: 100% !important;
+  height: 100% !important;
+  max-width: 100% !important;
+  box-sizing: border-box !important;
+}
+
+body {
+  display: block !important;
+  place-items: initial !important;
+  align-items: initial !important;
+  justify-content: initial !important;
+  flex-direction: initial !important;
+  background-color: #f9fafb !important;
+  color: #111827 !important;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif !important;
+  line-height: 1.5 !important;
+}
+
+/* root container should fill screen but allow centering */
+#root {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  height: auto !important;
+}
+
+/* main dashboard wrapper */
+.dashboard-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  max-width: 1400px !important;
+  width: 100% !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  padding: 1.5rem !important;
+  box-sizing: border-box !important;
+}
