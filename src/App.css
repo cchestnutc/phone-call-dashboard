@@ -2,185 +2,209 @@
    App-level styles (no globals)
    =============================== */
 
+/* General Page Styling */
+body {
+    font-family: Arial, sans-serif;
+    background-color: #f8f9fa;
+    margin: 0;
+    padding: 0;
+}
+
+/* Dashboard Container */
+.dashboard-container {
+    max-width: 1200px;
+    margin: 20px auto;
+    padding: 20px;
+    background: #fff;
+    border-radius: 8px;
+    box-shadow: 0 2px 8px rgba(0, 0, 0, 0.1);
+}
+
 /* Title */
 .dashboard-title {
-  font-size: 2.2rem;
-  line-height: 1.2;
-  font-weight: 700;
-  color: #111827;
-  margin: 0 0 1rem 0;
-  text-align: center; /* center the heading only */
+    font-size: 2.2rem;
+    line-height: 1.2;
+    font-weight: 700;
+    color: #111827;
+    margin: 0 0 1rem 0;
+    text-align: center; /* center the heading only */
 }
 
 /* Tabs row (Calls / Bookings) */
 .tabs-header {
-  display: flex;
-  justify-content: center;
-  align-items: center;
-  gap: 0.75rem;
-  width: 100%;
-  padding-bottom: 0.75rem;
-  margin-bottom: 1.25rem;
-  border-bottom: 1px solid #e5e7eb; /* light divider */
-  box-sizing: border-box;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    gap: 0.75rem;
+    width: 100%;
+    padding-bottom: 0.75rem;
+    margin-bottom: 1.25rem;
+    border-bottom: 1px solid #e5e7eb; /* light divider */
+    box-sizing: border-box;
 }
-
 .tab-button {
-  border: 1px solid #d1d5db;
-  background-color: #f9fafb;
-  color: #111827;
-  border-radius: 8px;
-  padding: 0.5rem 1rem;
-  font: inherit;
-  font-weight: 500;
-  line-height: 1.2rem;
-  cursor: pointer;
-  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+    border: 1px solid #d1d5db;
+    background-color: #f9fafb;
+    color: #111827;
+    border-radius: 8px;
+    padding: 0.5rem 1rem;
+    font: inherit;
+    font-weight: 500;
+    line-height: 1.2rem;
+    cursor: pointer;
+    transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
 }
-
 .tab-button:hover {
-  background-color: #eef2ff; /* subtle hover */
-  border-color: #c7d2fe;
+    background-color: #eef2ff; /* subtle hover */
+    border-color: #c7d2fe;
 }
-
 .tab-active {
-  background-color: #ffffff;
-  border-color: #9ca3af;
-  font-weight: 600;
+    background-color: #ffffff;
+    border-color: #9ca3af;
+    font-weight: 600;
 }
-
 .tab-inactive {
-  background-color: #f3f4f6;
-  color: #4b5563;
+    background-color: #f3f4f6;
+    color: #4b5563;
 }
 
 /* ===============================
    Sections & Cards
    =============================== */
-
 /* White content area (bookings/calls content lives inside) */
 .tab-panel {
-  width: 100%;
-  background: transparent; /* shell handles page background */
-  box-sizing: border-box;
+    width: 100%;
+    background: transparent; /* shell handles page background */
+    box-sizing: border-box;
 }
-
 /* Inner stack that holds sections (filters + cards) */
 .tab-panel-inner {
-  width: 100%;
-  display: flex;
-  flex-direction: column;
-  gap: 1.25rem;
-  box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-direction: column;
+    gap: 1.25rem;
+    box-sizing: border-box;
 }
-
 /* Generic section wrapper */
 .section-block {
-  width: 100%;
-  box-sizing: border-box;
+    width: 100%;
+    box-sizing: border-box;
 }
 
 /* Filter rows (calls + bookings) */
 .filterbar-row,
 .filters-row {
-  width: 100%;
-  display: flex;
-  flex-wrap: wrap;
-  gap: 0.75rem;
-  align-items: center;
-  justify-content: center; /* centered controls */
-  margin: 0.25rem 0 0.75rem 0;
-  box-sizing: border-box;
+    width: 100%;
+    display: flex;
+    flex-wrap: wrap;
+    gap: 0.75rem;
+    align-items: center;
+    justify-content: center; /* centered controls */
+    margin: 0.25rem 0 0.75rem 0;
+    box-sizing: border-box;
+}
+.filterbar-row select,
+.filters-row select {
+    padding: 8px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    font-size: 14px;
 }
 
 /* ===============================
    Tiles / Charts (full-width grid)
    =============================== */
-
 /* The main grid for AgentSummary, HourlyBreakdown, MonthlyCallVolume, etc. */
 .summary-breakdown-container {
-  display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
-  gap: 1rem;
-  width: 100%;
-  box-sizing: border-box;
+    display: grid;
+    grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+    gap: 1rem;
+    width: 100%;
+    box-sizing: border-box;
 }
-
 /* Individual cards/tiles */
 .agent-summary,
 .hourly-breakdown,
 .monthly-chart {
-  width: 100%;
-  background: #ffffff;
-  color: #111827;
-  border-radius: 12px;
-  border: 1px solid #e5e7eb;
-  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
-  padding: 1rem;
-  box-sizing: border-box;
+    width: 100%;
+    background: #ffffff;
+    color: #111827;
+    border-radius: 12px;
+    border: 1px solid #e5e7eb;
+    box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+    padding: 1rem;
+    box-sizing: border-box;
 }
-
 /* Make Recharts wrappers behave nicely in cards */
 .monthly-chart .recharts-responsive-container,
 .hourly-breakdown .recharts-responsive-container {
-  width: 100% !important;  /* Recharts respects its parent; ensure parent fills */
-  height: 300px !important;
+    width: 100% !important; /* Recharts respects its parent; ensure parent fills */
+    height: 300px !important;
 }
 
 /* ===============================
    Tables & Text
    =============================== */
-
 .section-block h2 {
-  margin: 0 0 0.75rem 0;
-  font-size: 1.25rem;
-  font-weight: 600;
-  color: #1f2937;
+    margin: 0 0 0.75rem 0;
+    font-size: 1.25rem;
+    font-weight: 600;
+    color: #1f2937;
 }
-
 table {
-  width: 100%;
-  border-collapse: collapse;
-  font-size: 0.95rem;
+    width: 100%;
+    border-collapse: collapse;
+    font-size: 0.95rem;
 }
-
 th, td {
-  text-align: left;
-  padding: 0.5rem 0.6rem;
-  border-bottom: 1px solid #e5e7eb;
+    text-align: left;
+    padding: 0.5rem 0.6rem;
+    border-bottom: 1px solid #e5e7eb;
+}
+th {
+    background: #f3f4f6;
+    font-weight: 600;
+    color: #374151;
 }
 
-th {
-  background: #f3f4f6;
-  font-weight: 600;
-  color: #374151;
-}
-/* Wrapper to center entire dashboard */
-.dashboard-wrapper {
-  max-width: 1200px;
-  margin: 0 auto;
-  padding: 1rem;
-  box-sizing: border-box;
-}
 /* ===============================
    Responsive tweaks
    =============================== */
 @media (max-width: 1024px) {
-  .summary-breakdown-container {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
-  }
+    .summary-breakdown-container {
+        grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    }
 }
-
+@media (max-width: 768px) {
+    .dashboard-container {
+        padding: 10px;
+    }
+    .tab-panel-inner {
+        gap: 0.75rem;
+    }
+    .agent-summary,
+    .hourly-breakdown,
+    .monthly-chart {
+        padding: 0.85rem;
+    }
+}
 @media (max-width: 640px) {
-  .tabs-header {
-    gap: 0.5rem;
-  }
-  .tab-button {
-    padding: 0.45rem 0.8rem;
-  }
-  .agent-summary,
-  .hourly-breakdown,
-  .monthly-chart {
-    padding: 0.85rem;
-  }
+    .tabs-header {
+        gap: 0.5rem;
+        flex-direction: column;
+    }
+    .tab-button {
+        padding: 0.45rem 0.8rem;
+        width: 100%;
+    }
+    .filterbar-row,
+    .filters-row {
+        flex-direction: column;
+        gap: 0.5rem;
+    }
+    .agent-summary,
+    .hourly-breakdown,
+    .monthly-chart {
+        padding: 0.75rem;
+    }
 }
