@@ -1,17 +1,15 @@
 <!DOCTYPE html>
 <html lang="en">
   <head>
-    <meta charset="utf-8" />
+    <meta charset="UTF-8" />
     <meta
       name="viewport"
-      content="width=device-width, initial-scale=1"
+      content="width=device-width, initial-scale=1.0"
     />
-    <title>Help Desk Dashboard</title>
+    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
+    <title>Help Desk Call Data</title>
 
-    <!-- 🔒 Global layout override.
-         This kills the default "body { display:flex; place-items:center }"
-         that was causing your whole app to sit on the left half.
-    -->
+    <!-- HARD OVERRIDE LAYOUT -->
     <style>
       html,
       body,
@@ -23,11 +21,13 @@
         box-sizing: border-box;
       }
 
+      /* kill the Vite starter flex body and any extension overrides */
       body {
         display: block !important;
-        align-items: unset !important;
-        justify-content: unset !important;
-        place-items: unset !important;
+        flex-direction: initial !important;
+        align-items: initial !important;
+        justify-content: initial !important;
+        place-items: initial !important;
 
         background-color: #f9fafb;
         color: #111827;
@@ -35,6 +35,7 @@
         line-height: 1.5;
       }
 
+      /* make sure the React root can stretch full width */
       #root {
         display: flex;
         flex-direction: column;
@@ -42,33 +43,13 @@
         width: 100%;
       }
     </style>
-
-    <!-- If you have a favicon from Vite, you can keep this -->
-    <link rel="icon" type="image/svg+xml" href="/vite.svg" />
-
-    <!-- Firebase SDKs (keep if you still need them in the app) -->
-    <script defer src="/__/firebase/11.7.3/firebase-app-compat.js"></script>
-    <script defer src="/__/firebase/11.7.3/firebase-auth-compat.js"></script>
-    <script defer src="/__/firebase/11.7.3/firebase-database-compat.js"></script>
-    <script defer src="/__/firebase/11.7.3/firebase-firestore-compat.js"></script>
-    <script defer src="/__/firebase/11.7.3/firebase-functions-compat.js"></script>
-    <script defer src="/__/firebase/11.7.3/firebase-messaging-compat.js"></script>
-    <script defer src="/__/firebase/11.7.3/firebase-storage-compat.js"></script>
-    <script defer src="/__/firebase/11.7.3/firebase-analytics-compat.js"></script>
-    <script defer src="/__/firebase/11.7.3/firebase-remote-config-compat.js"></script>
-    <script defer src="/__/firebase/11.7.3/firebase-performance-compat.js"></script>
-    <script defer src="/__/firebase/init.js?useEmulator=true"></script>
   </head>
 
   <body>
-    <!-- 🔑 This is where React will mount -->
+    <!-- React will mount INTO this node -->
     <div id="root"></div>
 
-    <!-- Your app bundle from Vite -->
+    <!-- Vite entry -->
     <script type="module" src="/src/main.jsx"></script>
-  </body>
-</html>
-
-    </script>
   </body>
 </html>
