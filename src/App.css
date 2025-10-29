@@ -155,7 +155,13 @@ th {
   font-weight: 600;
   color: #374151;
 }
-
+/* Wrapper to center entire dashboard */
+.dashboard-wrapper {
+  max-width: 1200px;
+  margin: 0 auto;
+  padding: 1rem;
+  box-sizing: border-box;
+}
 /* ===============================
    Responsive tweaks
    =============================== */
