@@ -16,17 +16,28 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
 
   useEffect(() => {
     const fetchBookings = async () => {
-      const snapshot = await getDocs(collection(bookingsDb, "bookings-appointments"));
-      const data = snapshot.docs.map(doc => ({
+      const snapshot = await getDocs(
+        collection(bookingsDb, "bookings-appointments")
+      );
+      const data = snapshot.docs.map((doc) => ({
         id: doc.id,
-        ...doc.data()
+        ...doc.data(),
       }));
 
-      const filtered = data.filter(booking => {
+      const filtered = data.filter((booking) => {
         if (!booking.start || !booking.start.toDate) return false;
         const date = booking.start.toDate();
-        const yearMatch = Array.isArray(selectedBookingYear) && (selectedBookingYear.length === 0 || selectedBookingYear.includes(date.getFullYear()));
-        const monthMatch = Array.isArray(selectedBookingMonth) && (selectedBookingMonth.length === 0 || selectedBookingMonth.includes(date.getMonth() + 1));
+
+        const yearMatch =
+          Array.isArray(selectedBookingYear) &&
+          (selectedBookingYear.length === 0 ||
+            selectedBookingYear.includes(date.getFullYear()));
+
+        const monthMatch =
+          Array.isArray(selectedBookingMonth) &&
+          (selectedBookingMonth.length === 0 ||
+            selectedBookingMonth.includes(date.getMonth() + 1));
+
         return yearMatch && monthMatch;
       });
 
@@ -36,7 +47,7 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
     fetchBookings();
   }, [selectedBookingMonth, selectedBookingYear]);
 
-  // Normalize service names by trimming after the dash
+  // collapse services with trailing "- something"
   const serviceCount = bookings.reduce((acc, { service }) => {
     if (!service) return acc;
     const normalizedService = service.split("-")[0].trim();
@@ -44,21 +55,34 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
     return acc;
   }, {});
 
-  const chartData = Object.entries(serviceCount).map(([service, count]) => ({
-    service,
-    count
-  }));
+  const chartData = Object.entries(serviceCount).map(
+    ([service, count]) => ({
+      service,
+      count,
+    })
+  );
 
   return (
-    <div>
-      <h2 style={{ textAlign: "center" }}>Total Bookings: {bookings.length}</h2>
+    <div className="monthly-chart" style={{ width: "100%" }}>
+      <div
+        style={{
+          fontWeight: 600,
+          fontSize: "1rem",
+          textAlign: "center",
+          marginBottom: "0.5rem",
+          color: "#111827",
+        }}
+      >
+        Total Bookings: {bookings.length}
+      </div>
+
       <ResponsiveContainer width="100%" height={300}>
         <BarChart data={chartData}>
           <XAxis dataKey="service" />
           <YAxis />
           <Tooltip />
           <Legend />
-          <Bar dataKey="count" fill="#4e79a7" />
+          <Bar dataKey="count" />
         </BarChart>
       </ResponsiveContainer>
     </div>
@@ -66,3 +90,4 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
 };
 
 export default BookingsSummaryChart;
+
