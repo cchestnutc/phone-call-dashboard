@@ -1,11 +1,13 @@
-/* --- Global tokens / base typography --- */
+/* --------------------------
+   Base Typography & Tokens
+--------------------------- */
 :root {
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
   line-height: 1.5;
   font-weight: 400;
 
-  color: #111827;             /* dark text */
-  background-color: #f9fafb;  /* light gray background */
+  color: #111827;             /* Dark gray text */
+  background-color: #f9fafb;  /* Light gray page background */
 
   font-synthesis: none;
   text-rendering: optimizeLegibility;
@@ -13,56 +15,84 @@
   -moz-osx-font-smoothing: grayscale;
 }
 
-/* links */
-a {
-  font-weight: 500;
-  color: #4f46e5;
-  text-decoration: inherit;
-}
-a:hover {
-  color: #4338ca;
-}
+/* --------------------------
+   Reset & Layout Overrides
+--------------------------- */
 
-/* --- CRITICAL LAYOUT RESET --- */
-/* We are overriding the Vite starter's body flex behavior. */
-
+/* Kill any injected flex display from Vite or extensions */
 html,
 body,
 #root {
-  margin: 0;
-  padding: 0;
-  width: 100%;
-  min-height: 100vh;
-  box-sizing: border-box;
+  display: block !important;
+  width: 100% !important;
+  max-width: 100% !important;
+  margin: 0 !important;
+  padding: 0 !important;
+  min-height: 100vh !important;
+  box-sizing: border-box !important;
 }
 
-/* stop the body from acting like a flexbox container */
+/* Body should never be a flex container */
 body {
   display: block !important;
-  /* we'll just inherit background from :root */
-  background-color: #f9fafb;
-  color: #111827;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
+  background-color: #f9fafb !important;
+  color: #111827 !important;
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif !important;
+  line-height: 1.5 !important;
 }
 
-/* make sure the React root can stretch full width */
+/* React root stretches the full width */
 #root {
-  display: flex;
-  flex-direction: column;
-  align-items: stretch; /* children can choose their own centering */
-  width: 100%;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  height: auto !important;
 }
 
-/* --- Headings/buttons defaults to look consistent --- */
+/* --------------------------
+   Dashboard Centering Layout
+--------------------------- */
+.dashboard-container {
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: center !important;
+  justify-content: flex-start !important;
+  width: 100% !important;
+  max-width: 1400px !important;
+  margin: 0 auto !important;
+  padding: 1rem !important;
+  box-sizing: border-box !important;
+}
+
+/* --------------------------
+   Typography
+--------------------------- */
 h1 {
   font-size: 2rem;
   line-height: 1.2;
   font-weight: 700;
   color: #111827;
-  margin: 0;
+  text-align: center;
+  margin: 1.5rem 0;
 }
 
+/* --------------------------
+   Links
+--------------------------- */
+a {
+  font-weight: 500;
+  color: #4f46e5;
+  text-decoration: none;
+}
+a:hover {
+  color: #4338ca;
+}
+
+/* --------------------------
+   Buttons
+--------------------------- */
 button {
   border-radius: 8px;
   border: 1px solid transparent;
@@ -81,25 +111,16 @@ button:focus,
 button:focus-visible {
   outline: 4px auto -webkit-focus-ring-color;
 }
-html,
-body,
-#root {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
-  margin: 0 !important;
-  padding: 0 !important;
-  box-sizing: border-box !important;
-}
 
-/* Center the dashboard container itself */
-.dashboard-container {
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-  justify-content: flex-start;
-  width: 100%;
-  min-height: 100vh;
-  margin: 0 auto;
-  box-sizing: border-box;
+/* --------------------------
+   Light Mode Adjustments
+--------------------------- */
+@media (prefers-color-scheme: light) {
+  :root {
+    color: #111827;
+    background-color: #ffffff;
+  }
+  button {
+    background-color: #f9f9f9;
+  }
 }
