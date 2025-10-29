@@ -1,187 +1,108 @@
-/* --------------------------
-   Base Typography & Tokens
---------------------------- */
-:root {
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
-  line-height: 1.5;
-  font-weight: 400;
+/* =============================
+   GLOBAL RESETS AND BODY FIX
+   ============================= */
 
-  color: #111827;             /* Dark gray text */
-  background-color: #f9fafb;  /* Light gray page background */
-
-  font-synthesis: none;
-  text-rendering: optimizeLegibility;
-  -webkit-font-smoothing: antialiased;
-  -moz-osx-font-smoothing: grayscale;
-}
-
-/* --------------------------
-   Reset & Layout Overrides
---------------------------- */
-
-/* Kill any injected flex display from Vite or extensions */
 html,
 body,
 #root {
-  display: block !important;
-  width: 100% !important;
-  max-width: 100% !important;
   margin: 0 !important;
   padding: 0 !important;
+  width: 100% !important;
   min-height: 100vh !important;
   box-sizing: border-box !important;
+  max-width: 100% !important;
 }
 
-/* Body should never be a flex container */
 body {
   display: block !important;
+  flex-direction: initial !important;
+  justify-content: initial !important;
+  align-items: initial !important;
+  place-items: initial !important;
+
   background-color: #f9fafb !important;
   color: #111827 !important;
   font-family: system-ui, Avenir, Helvetica, Arial, sans-serif !important;
   line-height: 1.5 !important;
 }
 
-/* React root stretches the full width */
 #root {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: stretch !important;
-  justify-content: flex-start !important;
+  display: block !important;
   width: 100% !important;
   height: auto !important;
-}
-
-/* --------------------------
-   Dashboard Centering Layout
---------------------------- */
-.dashboard-container {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  width: 100% !important;
-  max-width: 1400px !important;
-  margin: 0 auto !important;
-  padding: 1rem !important;
+  max-width: 100% !important;
   box-sizing: border-box !important;
 }
 
-/* --------------------------
-   Typography
---------------------------- */
-h1 {
-  font-size: 2rem;
-  line-height: 1.2;
-  font-weight: 700;
-  color: #111827;
-  text-align: center;
-  margin: 1.5rem 0;
-}
+/* =============================
+   DASHBOARD STRUCTURE
+   ============================= */
 
-/* --------------------------
-   Links
---------------------------- */
-a {
-  font-weight: 500;
-  color: #4f46e5;
-  text-decoration: none;
-}
-a:hover {
-  color: #4338ca;
-}
-
-/* --------------------------
-   Buttons
---------------------------- */
-button {
-  border-radius: 8px;
-  border: 1px solid transparent;
-  padding: 0.6em 1.2em;
-  font-size: 1em;
-  font-weight: 500;
-  font-family: inherit;
-  background-color: #f9fafb;
-  cursor: pointer;
-  transition: border-color 0.25s;
-}
-button:hover {
-  border-color: #6b7280;
-}
-button:focus,
-button:focus-visible {
-  outline: 4px auto -webkit-focus-ring-color;
-}
-
-/* --------------------------
-   Light Mode Adjustments
---------------------------- */
-@media (prefers-color-scheme: light) {
-  :root {
-    color: #111827;
-    background-color: #ffffff;
-  }
-  button {
-    background-color: #f9f9f9;
-  }
-}
-/* The outer app shell that holds the whole dashboard */
-.dashboard-container {
-  /* layout */
+/* The single centered shell for the entire dashboard */
+.dashboard-shell {
   display: flex !important;
   flex-direction: column !important;
 
-  /* center its own children left/right */
-  align-items: center !important;
-
-  /* sizing */
-  width: 100% !important;
+  /* Center horizontally */
   max-width: 1400px !important;
-
-  /* THIS is what actually centers the entire dashboard block */
+  width: 100% !important;
   margin-left: auto !important;
   margin-right: auto !important;
 
-  /* spacing */
-  padding: 1rem !important;
+  padding: 1.5rem !important;
   box-sizing: border-box !important;
 }
 
-/* The header row with the Calls / Bookings buttons */
+/* Header section (title + tabs) */
+.dashboard-header-block {
+  width: 100% !important;
+  margin-bottom: 1rem !important;
+  box-sizing: border-box !important;
+}
+
+.dashboard-title {
+  font-size: 2rem !important;
+  line-height: 1.2 !important;
+  font-weight: 700 !important;
+  color: #111827 !important;
+  text-align: center !important;
+  margin: 0 0 1rem 0 !important;
+}
+
+/* Tabs row (Calls / Bookings buttons) */
 .tabs-header {
   display: flex !important;
   justify-content: center !important;
   gap: 1rem !important;
-
   border-bottom: 1px solid #d1d5db !important;
 
-  /* don't let it just hug the left */
   width: 100% !important;
   max-width: 1400px !important;
   margin-left: auto !important;
   margin-right: auto !important;
 
-  margin-bottom: 1.5rem !important;
+  padding-bottom: 0.75rem !important;
   box-sizing: border-box !important;
+  margin-bottom: 1.5rem !important;
 }
 
-/* The white content card area */
+/* The main content card under tabs */
 .tab-panel {
   background: #ffffff !important;
   border: 1px solid #d1d5db !important;
   border-radius: 1rem !important;
-  box-shadow: 0 1px 4px rgba(0,0,0,0.08) !important;
+  box-shadow: 0 1px 4px rgba(0, 0, 0, 0.08) !important;
 
   width: 100% !important;
   max-width: 1400px !important;
-
-  padding: 2rem !important;
-  box-sizing: border-box !important;
-
   margin-left: auto !important;
   margin-right: auto !important;
+
+  padding: 1.5rem !important;
+  box-sizing: border-box !important;
 }
 
-/* Inner stack of sections */
+/* Inner column layout for data/content */
 .tab-panel-inner {
   max-width: 1100px !important;
   width: 100% !important;
@@ -192,50 +113,72 @@ button:focus-visible {
   flex-direction: column !important;
   gap: 2rem !important;
 }
-/* --------------------------
-   Final Global Overrides
---------------------------- */
-html, body, #root {
-  margin: 0 !important;
-  padding: 0 !important;
-  width: 100% !important;
-  height: 100% !important;
-  max-width: 100% !important;
-  box-sizing: border-box !important;
-}
 
-body {
-  display: block !important;
-  place-items: initial !important;
-  align-items: initial !important;
-  justify-content: initial !important;
-  flex-direction: initial !important;
+/* =============================
+   TAB BUTTONS
+   ============================= */
+
+.tab-button {
+  border: 1px solid #d1d5db !important;
   background-color: #f9fafb !important;
-  color: #111827 !important;
-  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif !important;
-  line-height: 1.5 !important;
+  border-radius: 4px !important;
+  padding: 0.5rem 1rem !important;
+  font-family: inherit !important;
+  font-size: 0.9rem !important;
+  line-height: 1.2rem !important;
+  cursor: pointer !important;
+  transition: background-color 0.2s ease, border-color 0.2s ease !important;
 }
 
-/* root container should fill screen but allow centering */
-#root {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  width: 100% !important;
-  height: auto !important;
+.tab-active {
+  background-color: #ffffff !important;
+  border-color: #9ca3af !important;
+  font-weight: 600 !important;
 }
 
-/* main dashboard wrapper */
-.dashboard-container {
-  display: flex !important;
-  flex-direction: column !important;
-  align-items: center !important;
-  justify-content: flex-start !important;
-  max-width: 1400px !important;
+.tab-inactive {
+  background-color: #f3f4f6 !important;
+  color: #4b5563 !important;
+}
+
+.tab-button:hover {
+  background-color: #e5e7eb !important;
+}
+
+/* =============================
+   TYPOGRAPHY AND TABLE CLEANUP
+   ============================= */
+
+h2,
+h3 {
+  color: #1f2937 !important;
+  font-weight: 600 !important;
+  margin-top: 0 !important;
+}
+
+table {
   width: 100% !important;
-  margin-left: auto !important;
-  margin-right: auto !important;
-  padding: 1.5rem !important;
-  box-sizing: border-box !important;
+  border-collapse: collapse !important;
+  font-size: 0.9rem !important;
+}
+
+th,
+td {
+  text-align: left !important;
+  padding: 0.5rem !important;
+  border-bottom: 1px solid #e5e7eb !important;
+}
+
+th {
+  background-color: #f3f4f6 !important;
+  font-weight: 600 !important;
+}
+
+/* =============================
+   SAFETY INLINE OVERRIDE
+   ============================= */
+@layer overrides {
+  body {
+    display: block !important;
+  }
 }
