@@ -35,9 +35,10 @@ export default function HelpDeskDashboard() {
 
       {/* Tab body */}
       <div className="tab-panel">
+        <div className="tab-panel-inner">
         {activeTab === "calls" && <CallsTab />}
         {activeTab === "bookings" && <BookingsTab />}
-      </div>
-    </div>
+  </div>
+</div>
   );
 }
