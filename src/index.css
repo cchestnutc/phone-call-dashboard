@@ -160,3 +160,37 @@ button:focus, button:focus-visible { outline: 4px auto -webkit-focus-ring-color;
   .dashboard-shell { padding: 1rem; }
   .summary-breakdown-container { grid-template-columns: 1fr; }
 }
+/* Force the dashboard container to span the full body width */
+body {
+  margin: 0 !important;
+  padding: 0 !important;
+  display: block !important;
+  width: 100% !important;
+  min-height: 100vh;
+  background-color: #f9fafb;
+}
+
+/* Stretch the main React root wrapper */
+#root {
+  display: flex;
+  flex-direction: column;
+  align-items: stretch; /* makes children fill horizontally */
+  width: 100% !important;
+  min-height: 100vh;
+  box-sizing: border-box;
+}
+
+/* The main container for dashboard layout */
+.dashboard-container,
+.dashboard-shell {
+  width: 100% !important;
+  max-width: none !important;
+  margin: 0 auto !important;
+  display: flex !important;
+  flex-direction: column !important;
+  align-items: stretch !important;
+  justify-content: flex-start;
+  box-sizing: border-box;
+  background: transparent;
+}
+
