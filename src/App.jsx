@@ -1,7 +1,7 @@
 import React, { useState } from "react";
 import CallsTab from "./CallsTab";
 import BookingsTab from "./BookingsTab";
-import "./App.css"; // keep your styles
+import "./App.css"; // styles
 
 export default function HelpDeskDashboard() {
   const [activeTab, setActiveTab] = useState("calls"); // "calls" | "bookings"
@@ -10,7 +10,7 @@ export default function HelpDeskDashboard() {
     <div className="dashboard-container">
       <h1 className="dashboard-title">Help Desk Dashboard</h1>
 
-      {/* ===== Tabs Header ===== */}
+      {/* Tabs Header */}
       <div className="tabs-header">
         <button
           className={
@@ -33,7 +33,7 @@ export default function HelpDeskDashboard() {
         </button>
       </div>
 
-      {/* ===== Tab Body ===== */}
+      {/* Tab Body */}
       <div className="tab-panel">
         <div className="tab-panel-inner">
           {activeTab === "calls" && <CallsTab />}
@@ -44,6 +44,3 @@ export default function HelpDeskDashboard() {
   );
 }
 
-</div>
-  );
-}
