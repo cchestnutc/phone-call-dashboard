@@ -24,10 +24,14 @@ a:hover {
 
 body {
   margin: 0;
-  display: flex;
-  place-items: center;
   min-width: 320px;
   min-height: 100vh;
+
+  /* make body just a normal block again */
+  display: block;
+  background-color: #f9fafb; /* light gray dashboard bg */
+  color: #111827;           /* dark gray text */
+  font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
 }
 
 h1 {
