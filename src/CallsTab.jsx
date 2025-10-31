@@ -18,9 +18,14 @@ export default function CallsTab() {
   // Fetch calls from Firestore
   useEffect(() => {
     const fetchCalls = async () => {
-      const snap = await getDocs(collection(db, "phone_calls"));
-      const callData = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
-      setCalls(callData);
+      try {
+        const snap = await getDocs(collection(db, "phone_calls"));
+        const callData = snap.docs.map((doc) => ({ id: doc.id, ...doc.data() }));
+        console.log("Fetched calls:", callData.length); // Debug log
+        setCalls(callData);
+      } catch (error) {
+        console.error("Error fetching calls:", error);
+      }
     };
     fetchCalls();
   }, []);
@@ -46,10 +51,18 @@ export default function CallsTab() {
     setFilteredCalls(filtered);
   }, [calls, selectedYear, selectedMonth, selectedAgents]);
 
-  // Unique agent list for FilterBar
-  const agentList = calls
-    .map((c) => c.agent)
-    .filter((v, i, a) => v && a.indexOf(v) === i);
+  // Build agent list from ALL calls (not filtered)
+  // Use agentName if available, fallback to agent field
+  const agentList = React.useMemo(() => {
+    const agents = calls
+      .map((c) => c.agentName || c.agent)
+      .filter((v) => v) // Remove null/undefined/empty
+      .filter((v, i, a) => a.indexOf(v) === i) // Remove duplicates
+      .sort(); // Sort alphabetically
+    
+    console.log("Agent list:", agents); // Debug log
+    return agents;
+  }, [calls]);
 
   return (
     <>
