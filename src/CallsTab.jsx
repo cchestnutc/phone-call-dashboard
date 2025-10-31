@@ -42,8 +42,10 @@ export default function CallsTab() {
         selectedMonth.length === 0 ||
         selectedMonth.includes(date.getMonth() + 1);
 
+      // Check both agentName and agent fields to match what we display
+      const callAgent = call.agentName || call.agent;
       const agentMatch =
-        selectedAgents.length === 0 || selectedAgents.includes(call.agent);
+        selectedAgents.length === 0 || selectedAgents.includes(callAgent);
 
       return yearMatch && monthMatch && agentMatch;
     });
