@@ -8,12 +8,21 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("calls");
 
   return (
-    <div style={{ 
-      width: '100%', 
-      display: 'flex', 
-      justifyContent: 'center',
-      backgroundColor: '#f9fafb'
-    }}>
+    <div 
+      className="dashboard-container"
+      style={{ 
+        width: '100%', 
+        maxWidth: '1400px',
+        marginLeft: 'auto',
+        marginRight: 'auto',
+        display: 'flex', 
+        flexDirection: 'column',
+        alignItems: 'stretch',
+        backgroundColor: '#f9fafb',
+        padding: '2rem 1rem',
+        boxSizing: 'border-box'
+      }}
+    >
       <div className="dashboard-shell">
         {/* Top block: title + tabs */}
         <div className="dashboard-header-block">
