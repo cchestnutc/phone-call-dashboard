@@ -8,33 +8,40 @@ export default function App() {
   const [activeTab, setActiveTab] = useState("calls");
 
   return (
-    <div className="dashboard-shell">
-      {/* Top block: title + tabs */}
-      <div className="dashboard-header-block">
-        <h1 className="dashboard-title">Help Desk Dashboard</h1>
+    <div style={{ 
+      width: '100%', 
+      display: 'flex', 
+      justifyContent: 'center',
+      backgroundColor: '#f9fafb'
+    }}>
+      <div className="dashboard-shell">
+        {/* Top block: title + tabs */}
+        <div className="dashboard-header-block">
+          <h1 className="dashboard-title">Help Desk Dashboard</h1>
 
-        <div className="tabs-header">
-          <button
-            className={"tab-button " + (activeTab === "calls" ? "tab-active" : "tab-inactive")}
-            onClick={() => setActiveTab("calls")}
-          >
-            Calls
-          </button>
+          <div className="tabs-header">
+            <button
+              className={"tab-button " + (activeTab === "calls" ? "tab-active" : "tab-inactive")}
+              onClick={() => setActiveTab("calls")}
+            >
+              Calls
+            </button>
 
-          <button
-            className={"tab-button " + (activeTab === "bookings" ? "tab-active" : "tab-inactive")}
-            onClick={() => setActiveTab("bookings")}
-          >
-            Bookings
-          </button>
+            <button
+              className={"tab-button " + (activeTab === "bookings" ? "tab-active" : "tab-inactive")}
+              onClick={() => setActiveTab("bookings")}
+            >
+              Bookings
+            </button>
+          </div>
         </div>
-      </div>
 
-      {/* White card content area */}
-      <div className="tab-panel">
-        <div className="tab-panel-inner">
-          {activeTab === "calls" && <CallsTab />}
-          {activeTab === "bookings" && <BookingsTab />}
+        {/* White card content area */}
+        <div className="tab-panel">
+          <div className="tab-panel-inner">
+            {activeTab === "calls" && <CallsTab />}
+            {activeTab === "bookings" && <BookingsTab />}
+          </div>
         </div>
       </div>
     </div>
