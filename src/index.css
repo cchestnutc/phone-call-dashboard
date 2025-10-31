@@ -15,6 +15,13 @@
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+/* FORCE CENTERING - Add this at the top after :root */
+.dashboard-container {
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+}
+
 
 /* ===============================
    Reset + Full-Width Layout
