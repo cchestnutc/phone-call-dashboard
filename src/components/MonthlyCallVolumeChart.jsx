@@ -54,12 +54,26 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
   }).filter(Boolean); // Remove months with all 0s
 
   return (
-    <div>
-      <h2>{title}</h2>
-      <ResponsiveContainer width="100%" height={350}>
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      width: '100%',
+      padding: '1rem'
+    }}>
+      <h2 style={{ 
+        margin: '0 0 1rem 0',
+        fontSize: '1.25rem',
+        fontWeight: 600,
+        color: '#1f2937',
+        textAlign: 'center'
+      }}>
+        {title}
+      </h2>
+      
+      <ResponsiveContainer width="100%" height={400}>
         <BarChart
           data={chartData}
-          margin={{ top: 20, right: 30, left: 20, bottom: 10 }}
+          margin={{ top: 30, right: 30, left: 20, bottom: 20 }}
         >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis dataKey="month" />
