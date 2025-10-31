@@ -15,10 +15,11 @@ export default function CallsTab() {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11, we need 1-12
   const currentYear = currentDate.getFullYear();
+  const previousYear = currentYear - 1;
 
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState([currentMonth]);
-  const [selectedYear, setSelectedYear] = useState([currentYear]);
+  const [selectedYear, setSelectedYear] = useState([previousYear, currentYear]);
 
   // Fetch calls from Firestore
   useEffect(() => {
