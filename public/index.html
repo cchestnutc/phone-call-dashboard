@@ -14,35 +14,28 @@
       html,
       body,
       #root {
-        margin: 0 !important;
-        padding: 0 !important;
-        width: 100% !important;
-        min-height: 100vh !important;
-        box-sizing: border-box !important;
-        max-width: 100% !important;
+        margin: 0;
+        padding: 0;
+        width: 100%;
+        min-height: 100vh;
+        box-sizing: border-box;
       }
 
       /* Our desired body styles */
       body {
-        display: block !important;
-        flex-direction: initial !important;
-        justify-content: initial !important;
-        align-items: initial !important;
-        place-items: initial !important;
-
-        background-color: #f9fafb !important;
-        color: #111827 !important;
-        font-family: system-ui, Avenir, Helvetica, Arial, sans-serif !important;
-        line-height: 1.5 !important;
+        display: block;
+        background-color: #f9fafb;
+        color: #111827;
+        font-family: system-ui, Avenir, Helvetica, Arial, sans-serif;
+        line-height: 1.5;
       }
 
       /* Root starts neutral (not flex row) */
       #root {
-        display: block !important;
-        width: 100% !important;
-        height: auto !important;
-        max-width: 100% !important;
-        box-sizing: border-box !important;
+        display: block;
+        width: 100%;
+        height: auto;
+        box-sizing: border-box;
       }
     </style>
   </head>
@@ -54,47 +47,10 @@
     <!-- Vite entry -->
     <script type="module" src="/src/main.jsx"></script>
 
-    <!-- Runtime enforcement: keep <body> from being turned into flex again -->
+    <!-- Runtime enforcement: keep <body> as block display -->
     <script>
-      (function () {
-        function fixBody() {
-          const b = document.body;
-          if (!b) return;
-
-          b.style.setProperty('display', 'block', 'important');
-          b.style.setProperty('flex-direction', 'initial', 'important');
-          b.style.setProperty('justify-content', 'initial', 'important');
-          b.style.setProperty('align-items', 'initial', 'important');
-          b.style.setProperty('place-items', 'initial', 'important');
-
-          b.style.setProperty('width', '100%', 'important');
-          b.style.setProperty('max-width', '100%', 'important');
-          b.style.setProperty('margin', '0', 'important');
-          b.style.setProperty('padding', '0', 'important');
-          b.style.setProperty('box-sizing', 'border-box', 'important');
-
-          b.style.setProperty('background-color', '#f9fafb', 'important');
-          b.style.setProperty('color', '#111827', 'important');
-          b.style.setProperty(
-            'font-family',
-            'system-ui, Avenir, Helvetica, Arial, sans-serif',
-            'important'
-          );
-          b.style.setProperty('line-height', '1.5', 'important');
-        }
-
-        // Run once immediately
-        fixBody();
-
-        // Watch for any extensions / injected styles that try to mess with <body>
-        // (Grammarly, text readers, etc. frequently flip body back to flex)
-        const observer = new MutationObserver(fixBody);
-        observer.observe(document.documentElement, {
-          subtree: true,
-          attributes: true,
-          attributeFilter: ['class', 'style']
-        });
-      })();
+      // Ensure body stays as block display
+      document.body.style.display = 'block';
     </script>
   </body>
 </html>
