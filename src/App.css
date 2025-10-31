@@ -94,13 +94,13 @@
 }
 
 /* ===============================
-   Tiles / Charts (full-width grid)
+   Tiles / Charts (custom grid layout)
    =============================== */
 
-/* The main grid for AgentSummary, HourlyBreakdown, MonthlyCallVolume, etc. */
+/* The main grid for AgentSummary, HourlyBreakdown, MonthlyCallVolume */
 .summary-breakdown-container {
   display: grid;
-  grid-template-columns: repeat(auto-fit, minmax(340px, 1fr));
+  grid-template-columns: 1fr 0.6fr 1.4fr;
   gap: 1rem;
   width: 100%;
   box-sizing: border-box;
@@ -159,9 +159,19 @@ th {
 /* ===============================
    Responsive tweaks
    =============================== */
-@media (max-width: 1024px) {
+@media (max-width: 1200px) {
   .summary-breakdown-container {
-    grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .monthly-chart {
+    grid-column: 1 / -1; /* Make chart full width on smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .summary-breakdown-container {
+    grid-template-columns: 1fr;
   }
 }
 
