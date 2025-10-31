@@ -184,3 +184,11 @@ button:focus, button:focus-visible { outline: 4px auto -webkit-focus-ring-color;
   box-sizing: border-box;
   background: transparent;
 }
+
+/* CRITICAL OVERRIDE: Force dashboard-container to center */
+.dashboard-container {
+  max-width: 1400px !important;
+  margin-left: auto !important;
+  margin-right: auto !important;
+  align-items: stretch !important;
+}
