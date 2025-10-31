@@ -31,7 +31,9 @@ function HourlyBreakdown({ calls }) {
       display: 'flex', 
       flexDirection: 'column', 
       alignItems: 'center',
+      justifyContent: 'flex-start',
       width: '100%',
+      height: '100%',
       padding: '1rem'
     }}>
       <h2 style={{ 
