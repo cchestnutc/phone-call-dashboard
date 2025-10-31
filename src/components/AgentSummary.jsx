@@ -45,30 +45,49 @@ function AgentSummary({ calls }) {
   };
 
   return (
-    <table className="summary-table">
-      <thead>
-        <tr>
-          <th>Agent Name</th>
-          <th>Total Calls</th>
-          <th>Total Talk Time (hh:mm:ss)</th>
-          <th>Avg Talk Time</th>
-        </tr>
-      </thead>
-      <tbody>
-        {agents.map(([agent, data]) => {
-          const avgSeconds =
-            data.totalTalkSeconds / data.totalCalls || 0;
-          return (
-            <tr key={agent}>
-              <td>{agent}</td>
-              <td>{data.totalCalls}</td>
-              <td>{formatTime(data.totalTalkSeconds)}</td>
-              <td>{formatTime(avgSeconds)}</td>
+    <div style={{ 
+      display: 'flex', 
+      flexDirection: 'column', 
+      width: '100%',
+      padding: '1rem'
+    }}>
+      <h2 style={{ 
+        margin: '0 0 1rem 0',
+        fontSize: '1.25rem',
+        fontWeight: 600,
+        color: '#1f2937',
+        textAlign: 'center'
+      }}>
+        Agent Summary
+      </h2>
+      
+      <div style={{ overflowX: 'auto' }}>
+        <table className="summary-table">
+          <thead>
+            <tr>
+              <th>Agent Name</th>
+              <th>Total Calls</th>
+              <th>Total Talk Time (hh:mm:ss)</th>
+              <th>Avg Talk Time</th>
             </tr>
-          );
-        })}
-      </tbody>
-    </table>
+          </thead>
+          <tbody>
+            {agents.map(([agent, data]) => {
+              const avgSeconds =
+                data.totalTalkSeconds / data.totalCalls || 0;
+              return (
+                <tr key={agent}>
+                  <td>{agent}</td>
+                  <td>{data.totalCalls}</td>
+                  <td>{formatTime(data.totalTalkSeconds)}</td>
+                  <td>{formatTime(avgSeconds)}</td>
+                </tr>
+              );
+            })}
+          </tbody>
+        </table>
+      </div>
+    </div>
   );
 }
 
