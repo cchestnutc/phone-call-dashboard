@@ -8,8 +8,14 @@ export default function BookingsTab() {
   const [bookings, setBookings] = useState([]);
   const [filteredBookings, setFilteredBookings] = useState([]);
 
-  const [selectedBookingMonth, setSelectedBookingMonth] = useState([]);
-  const [selectedBookingYear, setSelectedBookingYear] = useState([]);
+  // Get current month and year
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1; // getMonth() returns 0-11, we need 1-12
+  const currentYear = currentDate.getFullYear();
+  const previousYear = currentYear - 1;
+
+  const [selectedBookingMonth, setSelectedBookingMonth] = useState([currentMonth]);
+  const [selectedBookingYear, setSelectedBookingYear] = useState([previousYear, currentYear]);
 
   // Fetch bookings from Firestore
   useEffect(() => {
@@ -20,6 +26,7 @@ export default function BookingsTab() {
           id: doc.id, 
           ...doc.data() 
         }));
+        console.log("Fetched bookings:", bookingData.length); // Debug log
         setBookings(bookingData);
       } catch (error) {
         console.error("Error fetching bookings:", error);
