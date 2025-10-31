@@ -73,7 +73,3 @@ function AgentSummary({ calls }) {
 }
 
 export default AgentSummary;
-
-
-export default AgentSummary;
-
