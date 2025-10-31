@@ -19,7 +19,7 @@ export default function App() {
         flexDirection: 'column',
         alignItems: 'stretch',
         backgroundColor: '#f9fafb',
-        padding: '2rem 1rem',
+        padding: '1rem 1rem 2rem 1rem',
         boxSizing: 'border-box'
       }}
     >
