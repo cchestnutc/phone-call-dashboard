@@ -142,6 +142,8 @@
 
 /* Make the chart card taller */
 .monthly-chart {
+  grid-column: 1 / -1;
+  grid-row: 2;
   min-height: 1950px;
 }
 
