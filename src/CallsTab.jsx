@@ -91,16 +91,18 @@ export default function CallsTab() {
       {/* Main tiles/cards grid (full width) */}
       <div className="section-block">
         <div className="summary-breakdown-container">
+          {/* Call Volume Chart - appears FIRST */}
+          <div className="monthly-chart">
+            <MonthlyCallVolumeChart calls={filteredCalls} />
+          </div>
+
+          {/* Agent Summary and Hourly Breakdown - appear below */}
           <div className="agent-summary">
             <AgentSummary calls={filteredCalls} />
           </div>
 
           <div className="hourly-breakdown">
             <HourlyBreakdown calls={filteredCalls} />
-          </div>
-
-          <div className="monthly-chart">
-            <MonthlyCallVolumeChart calls={filteredCalls} />
           </div>
         </div>
       </div>
