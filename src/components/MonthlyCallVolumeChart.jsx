@@ -24,6 +24,7 @@ const colorPalettes = [
 const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
   const yearMonthMap = {};
   const years = new Set();
+  const currentYear = new Date().getFullYear();
 
   // Build data map: { "2024-1": 12, ... } and collect all years
   calls.forEach(call => {
@@ -38,20 +39,28 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
 
   const sortedYears = Array.from(years).sort();
 
-  // Build chart data per month, only if at least one year has data
+  // Build chart data per month
   const chartData = monthLabels.map((label, monthIndex) => {
-    let hasValue = false;
     const entry = { month: label };
 
     sortedYears.forEach(year => {
       const key = `${year}-${monthIndex}`;
       const count = yearMonthMap[key] || 0;
       entry[year] = count;
-      if (count > 0) hasValue = true;
     });
 
-    return hasValue ? entry : null;
-  }).filter(Boolean); // Remove months with all 0s
+    return entry;
+  });
+
+  // Function to get color for each year
+  const getYearColor = (year) => {
+    if (year === currentYear) return "#59a14f"; // Green for current year
+    if (year === currentYear - 1) return "#f28e2c"; // Orange for previous year
+    // Fallback colors for other years
+    const yearColors = ["#4e79a7", "#e15759", "#b07aa1", "#76b7b2", "#edc949"];
+    const index = sortedYears.indexOf(year) % yearColors.length;
+    return yearColors[index];
+  };
 
   return (
     <div style={{ 
@@ -80,11 +89,11 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
           <YAxis />
           <Tooltip />
           <Legend />
-          {sortedYears.map((year, i) => (
+          {sortedYears.map((year) => (
             <Bar
               key={year}
               dataKey={year}
-              fill={colorPalettes[i % colorPalettes.length]}
+              fill={getYearColor(year)}
               isAnimationActive={false}
             >
               <LabelList dataKey={year} position="top" />
