@@ -101,26 +101,26 @@
 .summary-breakdown-container {
   display: grid;
   grid-template-columns: 1fr 1fr;
-  grid-template-rows: auto auto;
   gap: 1rem;
   width: 100%;
   box-sizing: border-box;
 }
 
-/* Make Agent Summary and Hourly Breakdown sit side by side in first row */
+/* Make Call Volume chart span full width in FIRST row */
+.monthly-chart {
+  grid-column: 1 / -1;
+  grid-row: 1;
+  height: fit-content;
+}
+
+/* Make Agent Summary and Hourly Breakdown sit side by side in SECOND row */
 .agent-summary {
   grid-column: 1;
-  grid-row: 1;
+  grid-row: 2;
 }
 
 .hourly-breakdown {
   grid-column: 2;
-  grid-row: 1;
-}
-
-/* Make Call Volume chart span full width in second row */
-.monthly-chart {
-  grid-column: 1 / -1;
   grid-row: 2;
 }
 
@@ -140,17 +140,10 @@
   flex-direction: column;
 }
 
-/* Make the chart card taller */
-.monthly-chart {
-  grid-column: 1 / -1;
-  grid-row: 2;
-  min-height: 1950px;
-}
-
 /* Make Recharts wrappers behave nicely in cards */
 .monthly-chart .recharts-responsive-container,
 .hourly-breakdown .recharts-responsive-container {
-  width: 100% !important;  /* Recharts respects its parent; ensure parent fills */
+  width: 100% !important;
   height: 300px !important;
 }
 
