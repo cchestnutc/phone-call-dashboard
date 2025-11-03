@@ -65,8 +65,6 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
       display: 'flex', 
       flexDirection: 'column', 
       width: '100%',
-      height: '100%',
-      minHeight: '1800px',
       padding: '1rem'
     }}>
       <h2 style={{ 
@@ -79,7 +77,7 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
         {title}
       </h2>
       
-      <div style={{ flex: 1, minHeight: '1750px' }}>
+      <div style={{ width: '100%', height: '600px' }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
