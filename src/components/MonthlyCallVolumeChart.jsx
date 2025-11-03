@@ -16,11 +16,6 @@ const monthLabels = [
   "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
 ];
 
-const colorPalettes = [
-  "#4e79a7", "#f28e2c", "#59a14f", "#e15759",
-  "#b07aa1", "#76b7b2", "#edc949", "#af7aa1"
-];
-
 const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
   const yearMonthMap = {};
   const years = new Set();
@@ -92,31 +87,32 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
             barGap={2}
             barCategoryGap="15%"
           >
-          <CartesianGrid strokeDasharray="3 3" />
-          <XAxis 
-            dataKey="month" 
-            angle={0}
-            textAnchor="middle"
-            height={60}
-          />
-          <YAxis />
-          <Tooltip />
-          <Legend 
-            verticalAlign="top" 
-            height={36}
-          />
-          {sortedYears.map((year) => (
-            <Bar
-              key={year}
-              dataKey={year}
-              fill={getYearColor(year)}
-              isAnimationActive={false}
-            >
-              <LabelList dataKey={year} position="top" />
-            </Bar>
-          ))}
-        </BarChart>
-      </ResponsiveContainer>
+            <CartesianGrid strokeDasharray="3 3" />
+            <XAxis 
+              dataKey="month" 
+              angle={0}
+              textAnchor="middle"
+              height={60}
+            />
+            <YAxis />
+            <Tooltip />
+            <Legend 
+              verticalAlign="top" 
+              height={36}
+            />
+            {sortedYears.map((year) => (
+              <Bar
+                key={year}
+                dataKey={year}
+                fill={getYearColor(year)}
+                isAnimationActive={false}
+              >
+                <LabelList dataKey={year} position="top" />
+              </Bar>
+            ))}
+          </BarChart>
+        </ResponsiveContainer>
+      </div>
     </div>
   );
 };
