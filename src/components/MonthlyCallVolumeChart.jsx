@@ -61,23 +61,22 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
   };
 
   return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      width: '100%',
-      padding: '1rem'
-    }}>
-      <h2 style={{ 
-        margin: '0 0 0.5rem 0',
-        fontSize: '1.25rem',
-        fontWeight: 600,
-        color: '#1f2937',
-        textAlign: 'center'
-      }}>
+    <div className="monthly-chart">
+      {/* Title centered and styled like bookings */}
+      <div
+        style={{
+          fontWeight: 600,
+          fontSize: "1rem",
+          textAlign: "center",
+          marginBottom: "0.5rem",
+          color: "#111827",
+        }}
+      >
         {title}
-      </h2>
-      
-      <div style={{ width: '100%', height: '450px' }}>
+      </div>
+
+      {/* Keep overall chart size the same; CSS sets ResponsiveContainer height */}
+      <div style={{ width: "100%", height: "450px" }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
