@@ -111,6 +111,21 @@
   grid-column: 1 / -1;
   grid-row: 1;
   height: fit-content;
+
+  /* Card look */
+  width: 100%;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+
+  /* Tight “1-space border” look */
+  padding: 0.25rem; /* override default card padding */
+  box-sizing: border-box;
+
+  display: flex;
+  flex-direction: column;
 }
 
 /* Make Agent Summary and Hourly Breakdown sit side by side in SECOND row */
@@ -126,8 +141,7 @@
 
 /* Individual cards/tiles */
 .agent-summary,
-.hourly-breakdown,
-.monthly-chart {
+.hourly-breakdown {
   width: 100%;
   background: #ffffff;
   color: #111827;
@@ -140,8 +154,12 @@
   flex-direction: column;
 }
 
-/* Make Recharts wrappers behave nicely in cards */
-.monthly-chart .recharts-responsive-container,
+/* Recharts wrappers inside tiles */
+.monthly-chart .recharts-responsive-container {
+  width: 100% !important;
+  height: 450px !important; /* matches component height */
+}
+
 .hourly-breakdown .recharts-responsive-container {
   width: 100% !important;
   height: 300px !important;
@@ -203,8 +221,10 @@ th {
     padding: 0.45rem 0.8rem;
   }
   .agent-summary,
-  .hourly-breakdown,
-  .monthly-chart {
+  .hourly-breakdown {
     padding: 0.85rem;
+  }
+  .monthly-chart {
+    padding: 0.25rem; /* keep tight card on mobile too */
   }
 }
