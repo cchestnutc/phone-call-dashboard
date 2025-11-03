@@ -71,6 +71,7 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
       flexDirection: 'column', 
       width: '100%',
       height: '100%',
+      minHeight: '600px',
       padding: '1rem'
     }}>
       <h2 style={{ 
@@ -83,13 +84,14 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
         {title}
       </h2>
       
-      <ResponsiveContainer width="100%" height={500}>
-        <BarChart
-          data={chartData}
-          margin={{ top: 20, right: 20, left: 10, bottom: 30 }}
-          barGap={2}
-          barCategoryGap="15%"
-        >
+      <div style={{ flex: 1, minHeight: '550px' }}>
+        <ResponsiveContainer width="100%" height="100%">
+          <BarChart
+            data={chartData}
+            margin={{ top: 20, right: 20, left: 10, bottom: 30 }}
+            barGap={2}
+            barCategoryGap="15%"
+          >
           <CartesianGrid strokeDasharray="3 3" />
           <XAxis 
             dataKey="month" 
