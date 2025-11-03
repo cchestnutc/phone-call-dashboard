@@ -1,16 +1,22 @@
 import React from "react";
 
 function AgentSummary({ calls }) {
-  // Aggregate data by agent
-  const agentData = calls.reduce((acc, call) => {
-    // prefer call.agentName, fall back to call.agent, then "Unknown"
-    const agent =
-      call.agentName || call.agent || "Unknown";
+  // Aggregate data by agent AND year
+  const agentYearData = calls.reduce((acc, call) => {
+    const agent = call.agentName || call.agent || "Unknown";
+    const date = new Date(call.startDate);
+    const year = date.getFullYear();
+    const key = `${agent}-${year}`;
 
-    if (!acc[agent]) {
-      acc[agent] = { totalCalls: 0, totalTalkSeconds: 0 };
+    if (!acc[key]) {
+      acc[key] = { 
+        agent, 
+        year,
+        totalCalls: 0, 
+        totalTalkSeconds: 0 
+      };
     }
-    acc[agent].totalCalls += 1;
+    acc[key].totalCalls += 1;
 
     // Convert talk time to seconds (supports "hh:mm:ss" or "mm:ss")
     if (call.talkTime) {
@@ -25,13 +31,19 @@ function AgentSummary({ calls }) {
         totalSeconds = parts[0] * 60 + parts[1];
       }
 
-      acc[agent].totalTalkSeconds += totalSeconds;
+      acc[key].totalTalkSeconds += totalSeconds;
     }
 
     return acc;
   }, {});
 
-  const agents = Object.entries(agentData);
+  // Convert to array and sort by agent name, then year
+  const agentYearArray = Object.values(agentYearData).sort((a, b) => {
+    if (a.agent !== b.agent) {
+      return a.agent.localeCompare(b.agent);
+    }
+    return b.year - a.year; // Newer years first
+  });
 
   const formatTime = (totalSeconds) => {
     const h = Math.floor(totalSeconds / 3600);
@@ -66,18 +78,19 @@ function AgentSummary({ calls }) {
           <thead>
             <tr>
               <th>Agent Name</th>
+              <th>Year</th>
               <th>Total Calls</th>
               <th>Total Talk Time (hh:mm:ss)</th>
               <th>Avg Talk Time</th>
             </tr>
           </thead>
           <tbody>
-            {agents.map(([agent, data]) => {
-              const avgSeconds =
-                data.totalTalkSeconds / data.totalCalls || 0;
+            {agentYearArray.map((data) => {
+              const avgSeconds = data.totalTalkSeconds / data.totalCalls || 0;
               return (
-                <tr key={agent}>
-                  <td>{agent}</td>
+                <tr key={`${data.agent}-${data.year}`}>
+                  <td>{data.agent}</td>
+                  <td>{data.year}</td>
                   <td>{data.totalCalls}</td>
                   <td>{formatTime(data.totalTalkSeconds)}</td>
                   <td>{formatTime(avgSeconds)}</td>
