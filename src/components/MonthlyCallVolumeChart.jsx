@@ -70,10 +70,11 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
       display: 'flex', 
       flexDirection: 'column', 
       width: '100%',
+      height: '100%',
       padding: '1rem'
     }}>
       <h2 style={{ 
-        margin: '0 0 1rem 0',
+        margin: '0 0 0.5rem 0',
         fontSize: '1.25rem',
         fontWeight: 600,
         color: '#1f2937',
@@ -82,16 +83,26 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
         {title}
       </h2>
       
-      <ResponsiveContainer width="100%" height={400}>
+      <ResponsiveContainer width="100%" height={500}>
         <BarChart
           data={chartData}
-          margin={{ top: 30, right: 30, left: 20, bottom: 20 }}
+          margin={{ top: 20, right: 20, left: 10, bottom: 30 }}
+          barGap={2}
+          barCategoryGap="15%"
         >
           <CartesianGrid strokeDasharray="3 3" />
-          <XAxis dataKey="month" />
+          <XAxis 
+            dataKey="month" 
+            angle={0}
+            textAnchor="middle"
+            height={60}
+          />
           <YAxis />
           <Tooltip />
-          <Legend />
+          <Legend 
+            verticalAlign="top" 
+            height={36}
+          />
           {sortedYears.map((year) => (
             <Bar
               key={year}
