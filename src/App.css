@@ -100,10 +100,28 @@
 /* The main grid for AgentSummary, HourlyBreakdown, MonthlyCallVolume */
 .summary-breakdown-container {
   display: grid;
-  grid-template-columns: 0.7fr 0.4fr 2fr;
+  grid-template-columns: 1fr 1fr;
+  grid-template-rows: auto auto;
   gap: 1rem;
   width: 100%;
   box-sizing: border-box;
+}
+
+/* Make Agent Summary and Hourly Breakdown sit side by side in first row */
+.agent-summary {
+  grid-column: 1;
+  grid-row: 1;
+}
+
+.hourly-breakdown {
+  grid-column: 2;
+  grid-row: 1;
+}
+
+/* Make Call Volume chart span full width in second row */
+.monthly-chart {
+  grid-column: 1 / -1;
+  grid-row: 2;
 }
 
 /* Individual cards/tiles */
@@ -124,7 +142,7 @@
 
 /* Make the chart card taller */
 .monthly-chart {
-  min-height: 650px;
+  min-height: 1950px;
 }
 
 /* Make Recharts wrappers behave nicely in cards */
