@@ -1,120 +1,197 @@
-import React from "react";
-import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  Legend,
-  LabelList,
-} from "recharts";
+/* ===============================
+   App-level styles (no globals)
+   =============================== */
 
-const monthLabels = [
-  "Jan", "Feb", "Mar", "Apr", "May", "Jun",
-  "Jul", "Aug", "Sep", "Oct", "Nov", "Dec"
-];
+/* Title */
+.dashboard-title {
+  font-size: 2.2rem;
+  line-height: 1.2;
+  font-weight: 700;
+  color: #111827;
+  margin: 0 0 1rem 0;
+  text-align: center; /* center the heading only */
+}
 
-const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
-  const yearMonthMap = {};
-  const years = new Set();
-  const currentYear = new Date().getFullYear();
+/* Tabs row (Calls / Bookings) */
+.tabs-header {
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  gap: 0.75rem;
+  width: 100%;
+  padding-bottom: 0.75rem;
+  margin-bottom: 1.25rem;
+  border-bottom: 1px solid #e5e7eb; /* light divider */
+  box-sizing: border-box;
+}
 
-  // Build data map: { "2024-1": 12, ... } and collect all years
-  calls.forEach(call => {
-    const date = new Date(call.startDate);
-    if (isNaN(date)) return;
-    const month = date.getMonth(); // 0-11
-    const year = date.getFullYear();
-    const key = `${year}-${month}`;
-    yearMonthMap[key] = (yearMonthMap[key] || 0) + 1;
-    years.add(year);
-  });
+.tab-button {
+  border: 1px solid #d1d5db;
+  background-color: #f9fafb;
+  color: #111827;
+  border-radius: 8px;
+  padding: 0.5rem 1rem;
+  font: inherit;
+  font-weight: 500;
+  line-height: 1.2rem;
+  cursor: pointer;
+  transition: background-color 0.15s ease, border-color 0.15s ease, color 0.15s ease;
+}
 
-  const sortedYears = Array.from(years).sort();
+.tab-button:hover {
+  background-color: #eef2ff; /* subtle hover */
+  border-color: #c7d2fe;
+}
 
-  // Build chart data per month - only include months with data
-  const chartData = monthLabels.map((label, monthIndex) => {
-    let hasData = false;
-    const entry = { month: label };
+.tab-active {
+  background-color: #ffffff;
+  border-color: #9ca3af;
+  font-weight: 600;
+}
 
-    sortedYears.forEach(year => {
-      const key = `${year}-${monthIndex}`;
-      const count = yearMonthMap[key] || 0;
-      entry[year] = count;
-      if (count > 0) hasData = true;
-    });
+.tab-inactive {
+  background-color: #f3f4f6;
+  color: #4b5563;
+}
 
-    // Only include this month if at least one year has data
-    return hasData ? entry : null;
-  }).filter(Boolean);
+/* ===============================
+   Sections & Cards
+   =============================== */
 
-  // Function to get color for each year
-  const getYearColor = (year) => {
-    if (year === currentYear) return "#59a14f"; // Green for current year
-    if (year === currentYear - 1) return "#f28e2c"; // Orange for previous year
-    // Fallback colors for other years
-    const yearColors = ["#4e79a7", "#e15759", "#b07aa1", "#76b7b2", "#edc949"];
-    const index = sortedYears.indexOf(year) % yearColors.length;
-    return yearColors[index];
-  };
+/* White content area (bookings/calls content lives inside) */
+.tab-panel {
+  width: 100%;
+  background: transparent; /* shell handles page background */
+  box-sizing: border-box;
+}
 
-  return (
-    <div style={{ 
-      display: 'flex', 
-      flexDirection: 'column', 
-      width: '100%',
-      height: '100%',
-      minHeight: '1200px',
-      padding: '1rem'
-    }}>
-      <h2 style={{ 
-        margin: '0 0 0.5rem 0',
-        fontSize: '1.25rem',
-        fontWeight: 600,
-        color: '#1f2937',
-        textAlign: 'center'
-      }}>
-        {title}
-      </h2>
-      
-      <div style={{ flex: 1, minHeight: '1150px' }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={chartData}
-            margin={{ top: 20, right: 20, left: 10, bottom: 30 }}
-            barGap={2}
-            barCategoryGap="15%"
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis 
-              dataKey="month" 
-              angle={0}
-              textAnchor="middle"
-              height={60}
-            />
-            <YAxis />
-            <Tooltip />
-            <Legend 
-              verticalAlign="top" 
-              height={36}
-            />
-            {sortedYears.map((year) => (
-              <Bar
-                key={year}
-                dataKey={year}
-                fill={getYearColor(year)}
-                isAnimationActive={false}
-              >
-                <LabelList dataKey={year} position="top" />
-              </Bar>
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
-      </div>
-    </div>
-  );
-};
+/* Inner stack that holds sections (filters + cards) */
+.tab-panel-inner {
+  width: 100%;
+  display: flex;
+  flex-direction: column;
+  gap: 1.25rem;
+  box-sizing: border-box;
+}
 
-export default MonthlyCallVolumeChart;
+/* Generic section wrapper */
+.section-block {
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Filter rows (calls + bookings) */
+.filterbar-row,
+.filters-row {
+  width: 100%;
+  display: flex;
+  flex-wrap: wrap;
+  gap: 0.75rem;
+  align-items: center;
+  justify-content: center; /* centered controls */
+  margin: 0.25rem 0 0.75rem 0;
+  box-sizing: border-box;
+}
+
+/* ===============================
+   Tiles / Charts (custom grid layout)
+   =============================== */
+
+/* The main grid for AgentSummary, HourlyBreakdown, MonthlyCallVolume */
+.summary-breakdown-container {
+  display: grid;
+  grid-template-columns: 0.7fr 0.4fr 2fr;
+  gap: 1rem;
+  width: 100%;
+  box-sizing: border-box;
+}
+
+/* Individual cards/tiles */
+.agent-summary,
+.hourly-breakdown,
+.monthly-chart {
+  width: 100%;
+  background: #ffffff;
+  color: #111827;
+  border-radius: 12px;
+  border: 1px solid #e5e7eb;
+  box-shadow: 0 2px 6px rgba(0,0,0,0.06);
+  padding: 1rem;
+  box-sizing: border-box;
+  display: flex;
+  flex-direction: column;
+}
+
+/* Make the chart card taller */
+.monthly-chart {
+  min-height: 1950px;
+}
+
+/* Make Recharts wrappers behave nicely in cards */
+.monthly-chart .recharts-responsive-container,
+.hourly-breakdown .recharts-responsive-container {
+  width: 100% !important;  /* Recharts respects its parent; ensure parent fills */
+  height: 300px !important;
+}
+
+/* ===============================
+   Tables & Text
+   =============================== */
+
+.section-block h2 {
+  margin: 0 0 0.75rem 0;
+  font-size: 1.25rem;
+  font-weight: 600;
+  color: #1f2937;
+}
+
+table {
+  width: 100%;
+  border-collapse: collapse;
+  font-size: 0.95rem;
+}
+
+th, td {
+  text-align: left;
+  padding: 0.5rem 0.6rem;
+  border-bottom: 1px solid #e5e7eb;
+}
+
+th {
+  background: #f3f4f6;
+  font-weight: 600;
+  color: #374151;
+}
+
+/* ===============================
+   Responsive tweaks
+   =============================== */
+@media (max-width: 1200px) {
+  .summary-breakdown-container {
+    grid-template-columns: 1fr 1fr;
+  }
+  
+  .monthly-chart {
+    grid-column: 1 / -1; /* Make chart full width on smaller screens */
+  }
+}
+
+@media (max-width: 768px) {
+  .summary-breakdown-container {
+    grid-template-columns: 1fr;
+  }
+}
+
+@media (max-width: 640px) {
+  .tabs-header {
+    gap: 0.5rem;
+  }
+  .tab-button {
+    padding: 0.45rem 0.8rem;
+  }
+  .agent-summary,
+  .hourly-breakdown,
+  .monthly-chart {
+    padding: 0.85rem;
+  }
+}
