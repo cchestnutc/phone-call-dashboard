@@ -39,18 +39,21 @@ const MonthlyCallVolumeChart = ({ calls, title = "Call Volume" }) => {
 
   const sortedYears = Array.from(years).sort();
 
-  // Build chart data per month
+  // Build chart data per month - only include months with data
   const chartData = monthLabels.map((label, monthIndex) => {
+    let hasData = false;
     const entry = { month: label };
 
     sortedYears.forEach(year => {
       const key = `${year}-${monthIndex}`;
       const count = yearMonthMap[key] || 0;
       entry[year] = count;
+      if (count > 0) hasData = true;
     });
 
-    return entry;
-  });
+    // Only include this month if at least one year has data
+    return hasData ? entry : null;
+  }).filter(Boolean);
 
   // Function to get color for each year
   const getYearColor = (year) => {
