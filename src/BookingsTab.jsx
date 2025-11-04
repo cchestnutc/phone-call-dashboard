@@ -3,6 +3,7 @@ import { collection, getDocs } from "firebase/firestore";
 import { bookingsDb } from "./firebase";
 import BookingFilterBar from "./components/BookingFilterBar";
 import BookingsSummaryChart from "./components/BookingsSummaryChart";
+import BookingsMonthlyTrends from "./components/BookingsMonthlyTrends";
 
 export default function BookingsTab() {
   const [bookings, setBookings] = useState([]);
