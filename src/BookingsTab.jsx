@@ -75,42 +75,6 @@ export default function BookingsTab() {
           selectedBookingYear={selectedBookingYear}
         />
       </div>
-
-      {/* Bookings Table */}
-      <div className="section-block">
-        <h2>Bookings Summary</h2>
-        {filteredBookings.length === 0 ? (
-          <p>No bookings available for the selected filters.</p>
-        ) : (
-          <div style={{ overflowX: 'auto' }}>
-            <table>
-              <thead>
-                <tr>
-                  <th>Date</th>
-                  <th>Time</th>
-                  <th>Service</th>
-                  <th>Customer</th>
-                  <th>Status</th>
-                </tr>
-              </thead>
-              <tbody>
-                {filteredBookings.map((booking) => {
-                  const startDate = booking.start?.toDate ? booking.start.toDate() : null;
-                  return (
-                    <tr key={booking.id}>
-                      <td>{startDate ? startDate.toLocaleDateString() : 'N/A'}</td>
-                      <td>{startDate ? startDate.toLocaleTimeString([], { hour: '2-digit', minute: '2-digit' }) : 'N/A'}</td>
-                      <td>{booking.service || 'N/A'}</td>
-                      <td>{booking.customerName || booking.customer || 'N/A'}</td>
-                      <td>{booking.status || 'Scheduled'}</td>
-                    </tr>
-                  );
-                })}
-              </tbody>
-            </table>
-          </div>
-        )}
-      </div>
     </>
   );
 }
