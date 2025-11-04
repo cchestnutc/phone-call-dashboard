@@ -76,6 +76,13 @@ export default function BookingsTab() {
           selectedBookingYear={selectedBookingYear}
         />
       </div>
+
+      {/* Monthly Trends by Service */}
+      <div className="section-block">
+        <BookingsMonthlyTrends
+          selectedBookingYear={selectedBookingYear}
+        />
+      </div>
     </>
   );
 }
