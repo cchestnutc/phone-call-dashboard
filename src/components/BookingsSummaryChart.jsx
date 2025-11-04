@@ -90,31 +90,30 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
     return yearColors[index];
   };
 
-  // Custom tick component to wrap long text
+  // Custom tick component to wrap and angle long text
   const CustomXAxisTick = ({ x, y, payload }) => {
-    const words = payload.value.split(' ');
-    const lines = [];
-    let currentLine = '';
-
-    // Wrap text to max 20 characters per line
-    words.forEach(word => {
-      if ((currentLine + word).length > 20) {
-        if (currentLine) lines.push(currentLine.trim());
-        currentLine = word + ' ';
-      } else {
-        currentLine += word + ' ';
-      }
-    });
-    if (currentLine) lines.push(currentLine.trim());
+    const maxChars = 25;
+    const text = payload.value;
+    
+    // Truncate if too long and add ellipsis
+    const displayText = text.length > maxChars 
+      ? text.substring(0, maxChars) + '...' 
+      : text;
 
     return (
-      <text x={x} y={y} textAnchor="middle" fill="#666">
-        {lines.map((line, index) => (
-          <tspan key={index} x={x} dy={index === 0 ? 0 : 12}>
-            {line}
-          </tspan>
-        ))}
-      </text>
+      <g transform={`translate(${x},${y})`}>
+        <text 
+          x={0} 
+          y={0} 
+          dy={16}
+          textAnchor="end"
+          fill="#666"
+          transform="rotate(-35)"
+          fontSize="12"
+        >
+          {displayText}
+        </text>
+      </g>
     );
   };
 
@@ -136,14 +135,14 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
         <ResponsiveContainer width="100%" height="100%">
           <BarChart 
             data={chartData}
-            margin={{ top: 20, right: 20, left: 10, bottom: 80 }}
+            margin={{ top: 20, right: 20, left: 10, bottom: 120 }}
             barGap={2}
             barCategoryGap="15%"
           >
             <XAxis 
               dataKey="service" 
               tick={<CustomXAxisTick />}
-              height={100}
+              height={130}
               interval={0}
             />
             <YAxis />
