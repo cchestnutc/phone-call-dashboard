@@ -54,9 +54,9 @@ export default function BookingsTab() {
     setFilteredBookings(filtered);
   }, [bookings, selectedBookingYear, selectedBookingMonth]);
 
-  // Cleanup function to fix "blank" values
+  // THE CLEANUP FUNCTION GOES HERE
   const fixBlankRecords = async () => {
-    if (!window.confirm('This will fix all records with "blank" values by converting them to proper null/timestamp values. Continue?')) {
+    if (!window.confirm('This will fix all records with "blank" values. Continue?')) {
       return;
     }
     
@@ -66,25 +66,14 @@ export default function BookingsTab() {
     try {
       const snapshot = await getDocs(collection(bookingsDb, "bookings-appointments"));
       let fixedCount = 0;
-      let deletedCount = 0;
       
       for (const docSnapshot of snapshot.docs) {
         const data = docSnapshot.data();
         const docId = docSnapshot.id;
         
-        // Check for blank or invalid dates
+        // Check for blank values
         const hasBlankCreatedAt = data.createdAt === "blank" || !data.createdAt;
         const hasBlankEnd = data.end === "blank";
-        const hasInvalidStart = !data.start || data.start === "blank" || 
-                               (data.start.toDate && data.start.toDate().getFullYear() < 2020);
-        
-        // If start date is invalid, delete the record
-        if (hasInvalidStart) {
-          console.log(`🗑️ Deleting record with invalid start: ${docId}`);
-          await deleteDoc(doc(bookingsDb, "bookings-appointments", docId));
-          deletedCount++;
-          continue;
-        }
         
         // Fix blank values
         if (hasBlankCreatedAt || hasBlankEnd) {
@@ -107,7 +96,7 @@ export default function BookingsTab() {
         }
       }
       
-      alert(`✅ Cleanup complete!\n\nFixed: ${fixedCount} records\nDeleted: ${deletedCount} records with invalid dates`);
+      alert(`✅ Fixed ${fixedCount} records with "blank" values`);
       
       // Refresh the page to reload data
       window.location.reload();
