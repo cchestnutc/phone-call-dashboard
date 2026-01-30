@@ -20,8 +20,21 @@ const BookingFilterBar = ({
     new Set(
       (bookings || [])
         .map(b => {
-          const date = new Date(b.start);
-          return isNaN(date) ? null : date.getFullYear();
+          // Handle Firestore Timestamp properly
+          if (!b.start || !b.start.toDate) return null;
+          
+          try {
+            const date = b.start.toDate();
+            const year = date.getFullYear();
+            
+            // Filter out invalid years (like 1969)
+            if (year < 2020) return null;
+            
+            return year;
+          } catch (error) {
+            console.warn("Error parsing date:", error);
+            return null;
+          }
         })
         .filter(Boolean)
     )
