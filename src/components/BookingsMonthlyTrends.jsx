@@ -28,26 +28,14 @@ const BookingsMonthlyTrends = ({ selectedBookingYear }) => {
       const snapshot = await getDocs(
         collection(bookingsDb, "bookings-appointments")
       );
-      const data = snapshot.docs.map((doc) => ({
+      const allData = snapshot.docs.map((doc) => ({
         id: doc.id,
         ...doc.data(),
       }));
 
-      // Filter by selected years
-      const filtered = data.filter((booking) => {
-        if (!booking.start || !booking.start.toDate) return false;
-        const date = booking.start.toDate();
-
-        return Array.isArray(selectedBookingYear) &&
-          (selectedBookingYear.length === 0 ||
-            selectedBookingYear.includes(date.getFullYear()));
-      });
-
-      setBookings(filtered);
-
-      // Get unique services
+      // Get unique services from ALL bookings (not just filtered)
       const services = [...new Set(
-        filtered
+        allData
           .map(b => b.service ? b.service.split("-")[0].trim() : null)
           .filter(Boolean)
       )].sort();
@@ -58,6 +46,18 @@ const BookingsMonthlyTrends = ({ selectedBookingYear }) => {
       if (selectedServices.length === 0 && services.length > 0) {
         setSelectedServices(services.slice(0, 3));
       }
+
+      // Filter by selected years for chart data
+      const filtered = allData.filter((booking) => {
+        if (!booking.start || !booking.start.toDate) return false;
+        const date = booking.start.toDate();
+
+        return Array.isArray(selectedBookingYear) &&
+          (selectedBookingYear.length === 0 ||
+            selectedBookingYear.includes(date.getFullYear()));
+      });
+
+      setBookings(filtered);
     };
 
     fetchBookings();
