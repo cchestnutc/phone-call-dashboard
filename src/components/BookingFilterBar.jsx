@@ -10,7 +10,7 @@ const BookingFilterBar = ({
   setSelectedBookingYear
 }) => {
   const currentYear = new Date().getFullYear();
-
+  
   const monthOptions = [...Array(12)].map((_, i) => ({
     value: i + 1,
     label: new Date(0, i).toLocaleString("default", { month: "long" })
@@ -25,11 +25,14 @@ const BookingFilterBar = ({
         })
         .filter(Boolean)
     )
+  );
+
+  // Always include at least the current year
+  const allYears = Array.from(
+    new Set([...extractedYears, currentYear])
   ).sort((a, b) => b - a);
 
-  const fallbackYears = [currentYear - 1, currentYear, currentYear + 1];
-  const years = extractedYears.length > 0 ? extractedYears : fallbackYears;
-  const yearOptions = years.map(y => ({ value: y, label: `${y}` }));
+  const yearOptions = allYears.map(y => ({ value: y, label: `${y}` }));
 
   return (
     <div className="filter-bar-horizontal">
