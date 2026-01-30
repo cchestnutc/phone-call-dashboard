@@ -69,7 +69,9 @@ const BookingsSummaryChart = ({ selectedBookingMonth, selectedBookingYear }) => 
       (serviceYearMap[normalizedService][year] || 0) + 1;
   });
 
-  const sortedYears = Array.from(years).sort();
+  // Include all selected years, even if they have no bookings
+  const allYears = new Set([...years, ...selectedBookingYear]);
+  const sortedYears = Array.from(allYears).sort();
 
   // Build chart data with year columns
   const chartData = Object.entries(serviceYearMap).map(([service, yearCounts]) => {
