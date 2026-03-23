@@ -16,6 +16,7 @@ import FilterBar from "./components/FilterBar";
 import {
   buildAgentSummaryFromCalls,
   buildHourlyRowsFromCalls,
+  getAgentName,
   getAvailableAgentsFromCalls,
   getAvailableYearsFromAggregateDocs,
 } from "./utils/phoneDashboardData";
@@ -123,13 +124,15 @@ export default function CallsTab() {
   }, [callsForAgentFilter, selectedAgents]);
 
   const hourlyRows = useMemo(() => {
-    const callsToUse =
-      selectedAgents.length === 0
-        ? callsForAgentFilter
-        : callsForAgentFilter.filter((call) =>
-            selectedAgents.includes(call.agentName || call.agent || "Unknown")
-          );
+  const callsToUse =
+    selectedAgents.length === 0
+      ? callsForAgentFilter
+      : callsForAgentFilter.filter((call) =>
+          selectedAgents.includes(getAgentName(call))
+        );
 
+  return buildHourlyRowsFromCalls(callsToUse);
+}, [callsForAgentFilter, selectedAgents]);
     return buildHourlyRowsFromCalls(callsToUse);
   }, [callsForAgentFilter, selectedAgents]);
 
@@ -154,6 +157,7 @@ export default function CallsTab() {
           <div className="monthly-chart">
             <MonthlyCallVolumeChart
               aggregateDocs={filteredAggregateDocs}
+              selectedAgents={selectedAgents}
               title={loadingSummary ? "Call Volume (Loading...)" : "Call Volume"}
             />
           </div>
