@@ -131,8 +131,6 @@ export default function CallsTab() {
           selectedAgents.includes(getAgentName(call))
         );
 
-  return buildHourlyRowsFromCalls(callsToUse);
-}, [callsForAgentFilter, selectedAgents]);
     return buildHourlyRowsFromCalls(callsToUse);
   }, [callsForAgentFilter, selectedAgents]);
 
