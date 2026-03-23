@@ -19,7 +19,9 @@ export function parseTalkTimeToSeconds(talkTime) {
 }
 
 export function formatSecondsToHms(totalSeconds) {
-  const safeSeconds = Number.isFinite(totalSeconds) ? Math.max(0, Math.floor(totalSeconds)) : 0;
+  const safeSeconds = Number.isFinite(totalSeconds)
+    ? Math.max(0, Math.floor(totalSeconds))
+    : 0;
 
   const hours = Math.floor(safeSeconds / 3600);
   const minutes = Math.floor((safeSeconds % 3600) / 60)
@@ -98,7 +100,21 @@ export function buildHourlyRowsFromCalls(calls = []) {
   return rows;
 }
 
-export function buildMonthlyChartDataFromAggregateDocs(docs = []) {
+export function getAggregateDocCallCount(doc, selectedAgents = []) {
+  if (!doc) return 0;
+
+  if (!selectedAgents || selectedAgents.length === 0) {
+    return doc.totalCalls || 0;
+  }
+
+  const agentTotals = doc.agentTotals || {};
+
+  return selectedAgents.reduce((sum, agent) => {
+    return sum + (agentTotals[agent] || 0);
+  }, 0);
+}
+
+export function buildMonthlyChartDataFromAggregateDocs(docs = [], selectedAgents = []) {
   const monthLabels = [
     "Jan",
     "Feb",
@@ -116,19 +132,25 @@ export function buildMonthlyChartDataFromAggregateDocs(docs = []) {
 
   const years = Array.from(new Set(docs.map((doc) => doc.year))).sort((a, b) => a - b);
 
-  return monthLabels.map((label, monthIndex) => {
-    const entry = { month: label };
-    let hasData = false;
+  return monthLabels
+    .map((label, monthIndex) => {
+      const entry = { month: label };
+      let hasData = false;
 
-    years.forEach((year) => {
-      const match = docs.find((doc) => doc.year === year && doc.month === monthIndex + 1);
-      const count = match?.totalCalls || 0;
-      entry[year] = count;
-      if (count > 0) hasData = true;
-    });
+      years.forEach((year) => {
+        const match = docs.find(
+          (doc) => doc.year === year && doc.month === monthIndex + 1
+        );
 
-    return hasData ? entry : null;
-  }).filter(Boolean);
+        const count = getAggregateDocCallCount(match, selectedAgents);
+        entry[year] = count;
+
+        if (count > 0) hasData = true;
+      });
+
+      return hasData ? entry : null;
+    })
+    .filter(Boolean);
 }
 
 export function getAvailableYearsFromAggregateDocs(docs = []) {
@@ -137,10 +159,6 @@ export function getAvailableYearsFromAggregateDocs(docs = []) {
 
 export function getAvailableAgentsFromCalls(calls = []) {
   return Array.from(
-    new Set(
-      calls
-        .map((call) => getAgentName(call))
-        .filter(Boolean)
-    )
+    new Set(calls.map((call) => getAgentName(call)).filter(Boolean))
   ).sort((a, b) => a.localeCompare(b));
 }
