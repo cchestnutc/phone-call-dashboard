@@ -41,21 +41,39 @@ function getAgentName(call) {
   return call?.agentName || call?.agent || "Unknown";
 }
 
+function buildStartDateISO(startDate, startTime) {
+  if (!startDate || !startTime) return null;
+
+  const combined = new Date(`${startDate} ${startTime}`);
+  if (Number.isNaN(combined.getTime())) return null;
+
+  return combined.toISOString();
+}
+
 async function backfillMonthlyAggregates() {
   console.log("Loading phone_calls...");
   const snapshot = await db.collection("phone_calls").get();
 
   const monthlyMap = new Map();
+  const rawDocUpdates = [];
 
-  snapshot.forEach((doc) => {
-    const data = doc.data();
+  snapshot.forEach((docSnapshot) => {
+    const data = docSnapshot.data();
 
     const startDate = data.startDate ? new Date(data.startDate) : null;
     if (!startDate || Number.isNaN(startDate.getTime())) return;
 
-    const year = data.year || startDate.getFullYear();
-    const month = data.month || startDate.getMonth() + 1;
+    const year = startDate.getFullYear();
+    const month = startDate.getMonth() + 1;
+    const startDateISO = buildStartDateISO(data.startDate, data.startTime);
     const key = `${year}-${String(month).padStart(2, "0")}`;
+
+    rawDocUpdates.push({
+      id: docSnapshot.id,
+      year,
+      month,
+      startDateISO,
+    });
 
     if (!monthlyMap.has(key)) {
       monthlyMap.set(key, {
@@ -85,13 +103,39 @@ async function backfillMonthlyAggregates() {
     }
   });
 
+  console.log(`Preparing ${rawDocUpdates.length} raw document updates...`);
+
+  const rawBatchSize = 400;
+  for (let i = 0; i < rawDocUpdates.length; i += rawBatchSize) {
+    const chunk = rawDocUpdates.slice(i, i + rawBatchSize);
+    const batch = db.batch();
+
+    chunk.forEach((item) => {
+      const ref = db.collection("phone_calls").doc(item.id);
+      batch.set(
+        ref,
+        {
+          year: item.year,
+          month: item.month,
+          startDateISO: item.startDateISO,
+        },
+        { merge: true }
+      );
+    });
+
+    await batch.commit();
+    console.log(
+      `Updated raw docs ${Math.min(i + rawBatchSize, rawDocUpdates.length)} / ${rawDocUpdates.length}`
+    );
+  }
+
   console.log(`Writing ${monthlyMap.size} aggregate docs...`);
 
-  const batchSize = 400;
+  const aggregateBatchSize = 400;
   const entries = Array.from(monthlyMap.entries());
 
-  for (let i = 0; i < entries.length; i += batchSize) {
-    const chunk = entries.slice(i, i + batchSize);
+  for (let i = 0; i < entries.length; i += aggregateBatchSize) {
+    const chunk = entries.slice(i, i + aggregateBatchSize);
     const batch = db.batch();
 
     chunk.forEach(([docId, value]) => {
@@ -100,7 +144,9 @@ async function backfillMonthlyAggregates() {
     });
 
     await batch.commit();
-    console.log(`Committed ${Math.min(i + batchSize, entries.length)} / ${entries.length}`);
+    console.log(
+      `Committed aggregate docs ${Math.min(i + aggregateBatchSize, entries.length)} / ${entries.length}`
+    );
   }
 
   console.log("Backfill complete.");
