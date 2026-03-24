@@ -49,11 +49,11 @@ const MonthlyCallVolumeChart = ({
         {title}
       </div>
 
-      <div style={{ width: "100%", height: "450px" }}>
+      <div style={{ width: "100%", height: "290px" }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
-            margin={{ top: 20, right: 20, left: 10, bottom: 30 }}
+            margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
             barGap={2}
             barCategoryGap="15%"
           >
@@ -62,7 +62,7 @@ const MonthlyCallVolumeChart = ({
               dataKey="month"
               angle={0}
               textAnchor="middle"
-              height={60}
+              height={40}
             />
             <YAxis />
             <Tooltip />
