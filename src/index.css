@@ -134,6 +134,7 @@ button:focus, button:focus-visible { outline: 4px auto -webkit-focus-ring-color;
 .section-block {
   width: 100%;
   box-sizing: border-box;
+   margin-bottom: 0.75rem;
 }
 
 /* Container for summary, breakdown, and chart sections (Calls) */
