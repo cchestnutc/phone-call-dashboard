@@ -11,18 +11,16 @@ export default function App() {
     <div 
       className="dashboard-container"
       style={{ 
-        width: '100%', 
-        maxWidth: '1400px',
-        marginLeft: 'auto',
-        marginRight: 'auto',
-        display: 'flex', 
-        flexDirection: 'column',
-        alignItems: 'stretch',
-        backgroundColor: '#f9fafb',
-        padding: '0.5rem 1rem 1rem 1rem',
-        boxSizing: 'border-box'
-      }}
-    >
+        width: "100%",
+        maxWidth: "100%",
+        display: "flex",
+        flexDirection: "column",
+        alignItems: "stretch",
+        backgroundColor: "#f9fafb",
+        padding: "0.5rem 1rem 1rem 1rem",
+        boxSizing: "border-box"
+    }}
+>
       <div className="dashboard-shell">
         {/* Top block: title + tabs */}
         <div className="dashboard-header-block">
