@@ -146,10 +146,15 @@ export default function CallsTab() {
     return getAvailableAgentsFromCalls(callsForAgentFilter);
   }, [callsForAgentFilter]);
 
-  const availableYears = useMemo(() => {
-  const allYears = [2022, 2023, 2024, 2025, 2026, currentYear, previousYear];
-  return Array.from(new Set(allYears)).sort((a, b) => b - a);
-  }, [currentYear, previousYear]);
+const availableYears = useMemo(() => {
+  const aggregateYears = getAvailableYearsFromAggregateDocs(aggregateDocs);
+  const selectedYears = selectedYear || [];
+  const fallbackYears = [2022, 2023, 2024, 2025, 2026, previousYear, currentYear];
+
+  return Array.from(
+    new Set([...aggregateYears, ...selectedYears, ...fallbackYears])
+  ).sort((a, b) => b - a);
+}, [aggregateDocs, selectedYear, currentYear, previousYear]);
 
   const filteredCallsForDetails = useMemo(() => {
     if (selectedAgents.length === 0) return callsForAgentFilter;
