@@ -1,8 +1,10 @@
 import React from "react";
 import {
   buildKpiDataFromCalls,
+  calculateTrendPercent,
   formatHourLabel,
   formatSecondsToHms,
+  formatSignedPercent,
 } from "../utils/phoneDashboardData";
 
 function KpiCard({ label, value, subtext }) {
@@ -55,7 +57,10 @@ function KpiCard({ label, value, subtext }) {
   );
 }
 
-function CallKpiCards({ calls = [] }) {
+function CallKpiCards({
+  calls = [],
+  previousPeriodCalls = [],
+}) {
   const {
     totalCalls,
     totalTalkSeconds,
@@ -64,7 +69,16 @@ function CallKpiCards({ calls = [] }) {
     busiestHourCount,
     topAgent,
     topAgentCount,
+    peakDay,
+    peakDayCount,
+    callsPerAgent,
   } = buildKpiDataFromCalls(calls);
+
+  const previousTotals = buildKpiDataFromCalls(previousPeriodCalls);
+  const trendPercent = calculateTrendPercent(
+    totalCalls,
+    previousTotals.totalCalls
+  );
 
   return (
     <div
@@ -86,7 +100,7 @@ function CallKpiCards({ calls = [] }) {
       />
 
       <KpiCard
-        label="Average Talk Time"
+        label="Avg Talk Time / Call"
         value={formatSecondsToHms(avgTalkSeconds)}
       />
 
@@ -100,6 +114,24 @@ function CallKpiCards({ calls = [] }) {
         label="Top Agent"
         value={topAgent}
         subtext={`${topAgentCount.toLocaleString()} calls`}
+      />
+
+      <KpiCard
+        label="Peak Day"
+        value={peakDay}
+        subtext={`${peakDayCount.toLocaleString()} calls`}
+      />
+
+      <KpiCard
+        label="Calls per Agent"
+        value={callsPerAgent.toFixed(1)}
+        subtext="Average for selected period"
+      />
+
+      <KpiCard
+        label="Trend vs Last Month"
+        value={formatSignedPercent(trendPercent)}
+        subtext={`${previousTotals.totalCalls.toLocaleString()} calls last month`}
       />
     </div>
   );
