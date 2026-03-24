@@ -55,7 +55,7 @@ const MonthlyCallVolumeChart = ({
       <div
         style={{
           width: "100%",
-          height: "290px",
+          height: "320px",
           position: "relative",
           overflow: "hidden",
         }}
