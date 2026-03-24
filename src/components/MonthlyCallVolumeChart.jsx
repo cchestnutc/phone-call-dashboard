@@ -49,7 +49,15 @@ const MonthlyCallVolumeChart = ({
         {title}
       </div>
 
-      <div style={{ width: "100%", height: "290px" }}>
+  <div
+        style={{
+          width: "100%",
+          height: "290px",
+          position: "relative",
+          overflow: "hidden",
+          }}
+      >
+     <div style={{ width: "100%", height: "100%", paddingBottom: "0.5rem" }}>
         <ResponsiveContainer width="100%" height="100%">
           <BarChart
             data={chartData}
