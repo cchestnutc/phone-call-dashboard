@@ -121,18 +121,8 @@ export function getAggregateDocCallCount(doc, selectedAgents = []) {
 
 export function buildMonthlyChartDataFromAggregateDocs(docs = [], selectedAgents = []) {
   const monthLabels = [
-    "Jan",
-    "Feb",
-    "Mar",
-    "Apr",
-    "May",
-    "Jun",
-    "Jul",
-    "Aug",
-    "Sep",
-    "Oct",
-    "Nov",
-    "Dec",
+    "Jan", "Feb", "Mar", "Apr", "May", "Jun",
+    "Jul", "Aug", "Sep", "Oct", "Nov", "Dec",
   ];
 
   const years = Array.from(new Set(docs.map((doc) => doc.year))).sort((a, b) => a - b);
@@ -174,6 +164,7 @@ export function buildKpiDataFromCalls(calls = []) {
   let totalTalkSeconds = 0;
   const agentCounts = {};
   const hourCounts = Array(24).fill(0);
+  const dayCounts = {};
 
   calls.forEach((call) => {
     totalTalkSeconds += parseTalkTimeToSeconds(call?.talkTime);
@@ -188,6 +179,10 @@ export function buildKpiDataFromCalls(calls = []) {
       if (!Number.isNaN(hour) && hour >= 0 && hour <= 23) {
         hourCounts[hour] += 1;
       }
+    }
+
+    if (call?.startDate) {
+      dayCounts[call.startDate] = (dayCounts[call.startDate] || 0) + 1;
     }
   });
 
@@ -213,6 +208,20 @@ export function buildKpiDataFromCalls(calls = []) {
     }
   });
 
+  let peakDay = "N/A";
+  let peakDayCount = 0;
+
+  Object.entries(dayCounts).forEach(([date, count]) => {
+    if (count > peakDayCount) {
+      peakDay = date;
+      peakDayCount = count;
+    }
+  });
+
+  const callsPerAgent = Object.keys(agentCounts).length > 0
+    ? totalCalls / Object.keys(agentCounts).length
+    : 0;
+
   return {
     totalCalls,
     totalTalkSeconds,
@@ -221,7 +230,16 @@ export function buildKpiDataFromCalls(calls = []) {
     busiestHourCount,
     topAgent,
     topAgentCount,
+    peakDay,
+    peakDayCount,
+    callsPerAgent,
   };
+}
+
+export function calculateTrendPercent(currentValue, previousValue) {
+  if (!previousValue && !currentValue) return 0;
+  if (!previousValue) return 100;
+  return ((currentValue - previousValue) / previousValue) * 100;
 }
 
 export function formatHourLabel(hour) {
@@ -235,4 +253,10 @@ export function formatHourLabel(hour) {
 export function formatPercent(value) {
   const safeValue = Number.isFinite(value) ? value : 0;
   return `${safeValue.toFixed(1)}%`;
+}
+
+export function formatSignedPercent(value) {
+  const safeValue = Number.isFinite(value) ? value : 0;
+  const prefix = safeValue > 0 ? "+" : "";
+  return `${prefix}${safeValue.toFixed(1)}%`;
 }
