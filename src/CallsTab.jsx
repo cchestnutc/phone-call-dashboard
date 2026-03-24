@@ -9,6 +9,7 @@ import {
 import { db } from "./firebase";
 
 import AgentSummary from "./components/AgentSummary";
+import CallKpiCards from "./components/CallKpiCards";
 import HourlyBreakdown from "./components/HourlyBreakdown";
 import MonthlyCallVolumeChart from "./components/MonthlyCallVolumeChart";
 import RawCallsDrilldown from "./components/RawCallsDrilldown";
@@ -101,7 +102,6 @@ export default function CallsTab() {
 
   const filteredAggregateDocs = useMemo(() => {
     if (selectedMonth.length === 0) return aggregateDocs;
-
     return aggregateDocs.filter((doc) => selectedMonth.includes(doc.month));
   }, [aggregateDocs, selectedMonth]);
 
@@ -115,24 +115,21 @@ export default function CallsTab() {
     return aggregateYears.length > 0 ? aggregateYears : fallbackYears;
   }, [aggregateDocs, currentYear, previousYear]);
 
-  const agentSummaryRows = useMemo(() => {
-    const baseRows = buildAgentSummaryFromCalls(callsForAgentFilter);
+  const filteredCallsForDetails = useMemo(() => {
+    if (selectedAgents.length === 0) return callsForAgentFilter;
 
-    if (selectedAgents.length === 0) return baseRows;
-
-    return baseRows.filter((row) => selectedAgents.includes(row.agent));
+    return callsForAgentFilter.filter((call) =>
+      selectedAgents.includes(getAgentName(call))
+    );
   }, [callsForAgentFilter, selectedAgents]);
+
+  const agentSummaryRows = useMemo(() => {
+    return buildAgentSummaryFromCalls(filteredCallsForDetails);
+  }, [filteredCallsForDetails]);
 
   const hourlyRows = useMemo(() => {
-  const callsToUse =
-    selectedAgents.length === 0
-      ? callsForAgentFilter
-      : callsForAgentFilter.filter((call) =>
-          selectedAgents.includes(getAgentName(call))
-        );
-
-    return buildHourlyRowsFromCalls(callsToUse);
-  }, [callsForAgentFilter, selectedAgents]);
+    return buildHourlyRowsFromCalls(filteredCallsForDetails);
+  }, [filteredCallsForDetails]);
 
   return (
     <>
@@ -148,6 +145,10 @@ export default function CallsTab() {
           selectedYear={selectedYear}
           setSelectedYear={setSelectedYear}
         />
+      </div>
+
+      <div className="section-block">
+        <CallKpiCards calls={filteredCallsForDetails} />
       </div>
 
       <div className="section-block">
