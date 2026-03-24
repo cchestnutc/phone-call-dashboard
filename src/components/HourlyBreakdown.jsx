@@ -1,4 +1,5 @@
 import React from "react";
+import { formatPercent } from "../utils/phoneDashboardData";
 
 function HourlyBreakdown({ rows = [] }) {
   return (
@@ -28,7 +29,7 @@ function HourlyBreakdown({ rows = [] }) {
       <div
         style={{
           width: "100%",
-          maxWidth: "400px",
+          maxWidth: "520px",
           overflowX: "auto",
         }}
       >
@@ -65,6 +66,18 @@ function HourlyBreakdown({ rows = [] }) {
               >
                 Call Count
               </th>
+              <th
+                style={{
+                  textAlign: "center",
+                  padding: "0.75rem",
+                  borderBottom: "2px solid #e5e7eb",
+                  background: "#f3f4f6",
+                  fontWeight: 600,
+                  color: "#374151",
+                }}
+              >
+                % of Total
+              </th>
             </tr>
           </thead>
           <tbody>
@@ -89,13 +102,23 @@ function HourlyBreakdown({ rows = [] }) {
                 >
                   {row.count}
                 </td>
+                <td
+                  style={{
+                    textAlign: "center",
+                    padding: "0.6rem",
+                    borderBottom: "1px solid #e5e7eb",
+                    color: "#374151",
+                  }}
+                >
+                  {formatPercent(row.percentOfTotal)}
+                </td>
               </tr>
             ))}
 
             {rows.length === 0 && (
               <tr>
                 <td
-                  colSpan="2"
+                  colSpan="3"
                   style={{
                     textAlign: "center",
                     padding: "1rem",
