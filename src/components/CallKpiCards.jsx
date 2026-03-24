@@ -14,17 +14,17 @@ function KpiCard({ label, value, subtext }) {
         background: "#ffffff",
         border: "1px solid #e5e7eb",
         borderRadius: "0.75rem",
-        padding: "1rem",
+        padding: "0.75rem",
         boxShadow: "0 1px 2px rgba(0, 0, 0, 0.04)",
         display: "flex",
         flexDirection: "column",
-        gap: "0.35rem",
-        minHeight: "110px",
+        gap: "0.2rem",
+        minHeight: "82px",
       }}
     >
       <div
         style={{
-          fontSize: "0.9rem",
+          fontSize: "0.82rem",
           fontWeight: 600,
           color: "#6b7280",
         }}
@@ -34,7 +34,7 @@ function KpiCard({ label, value, subtext }) {
 
       <div
         style={{
-          fontSize: "1.6rem",
+          fontSize: "1.25rem",
           fontWeight: 700,
           color: "#111827",
           lineHeight: 1.2,
@@ -46,7 +46,7 @@ function KpiCard({ label, value, subtext }) {
       {subtext ? (
         <div
           style={{
-            fontSize: "0.85rem",
+            fontSize: "0.78rem",
             color: "#6b7280",
           }}
         >
@@ -85,7 +85,7 @@ function CallKpiCards({
       style={{
         width: "100%",
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(180px, 1fr))",
+        gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
         gap: "1rem",
       }}
     >
