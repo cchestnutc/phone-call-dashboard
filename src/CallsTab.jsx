@@ -147,10 +147,9 @@ export default function CallsTab() {
   }, [callsForAgentFilter]);
 
   const availableYears = useMemo(() => {
-    const aggregateYears = getAvailableYearsFromAggregateDocs(aggregateDocs);
-    const fallbackYears = [previousYear, currentYear];
-    return aggregateYears.length > 0 ? aggregateYears : fallbackYears;
-  }, [aggregateDocs, currentYear, previousYear]);
+  const allYears = [2022, 2023, 2024, 2025, 2026, currentYear, previousYear];
+  return Array.from(new Set(allYears)).sort((a, b) => b - a);
+  }, [currentYear, previousYear]);
 
   const filteredCallsForDetails = useMemo(() => {
     if (selectedAgents.length === 0) return callsForAgentFilter;
