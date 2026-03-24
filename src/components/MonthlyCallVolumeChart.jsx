@@ -14,16 +14,19 @@ import { buildMonthlyChartDataFromAggregateDocs } from "../utils/phoneDashboardD
 
 const MonthlyCallVolumeChart = ({
   aggregateDocs = [],
+  selectedAgents = [],
   title = "Call Volume",
 }) => {
   const currentYear = new Date().getFullYear();
 
   const chartData = useMemo(() => {
-    return buildMonthlyChartDataFromAggregateDocs(aggregateDocs);
-  }, [aggregateDocs]);
+    return buildMonthlyChartDataFromAggregateDocs(aggregateDocs, selectedAgents);
+  }, [aggregateDocs, selectedAgents]);
 
   const sortedYears = useMemo(() => {
-    return Array.from(new Set(aggregateDocs.map((doc) => doc.year))).sort((a, b) => a - b);
+    return Array.from(new Set(aggregateDocs.map((doc) => doc.year))).sort(
+      (a, b) => a - b
+    );
   }, [aggregateDocs]);
 
   const getYearColor = (year) => {
@@ -49,44 +52,45 @@ const MonthlyCallVolumeChart = ({
         {title}
       </div>
 
-  <div
+      <div
         style={{
           width: "100%",
           height: "290px",
           position: "relative",
           overflow: "hidden",
-          }}
+        }}
       >
-     <div style={{ width: "100%", height: "100%", paddingBottom: "0.5rem" }}>
-        <ResponsiveContainer width="100%" height="100%">
-          <BarChart
-            data={chartData}
-            margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
-            barGap={2}
-            barCategoryGap="15%"
-          >
-            <CartesianGrid strokeDasharray="3 3" />
-            <XAxis
-              dataKey="month"
-              angle={0}
-              textAnchor="middle"
-              height={40}
-            />
-            <YAxis />
-            <Tooltip />
-            <Legend verticalAlign="top" height={36} />
-            {sortedYears.map((year) => (
-              <Bar
-                key={year}
-                dataKey={year}
-                fill={getYearColor(year)}
-                isAnimationActive={false}
-              >
-                <LabelList dataKey={year} position="top" />
-              </Bar>
-            ))}
-          </BarChart>
-        </ResponsiveContainer>
+        <div style={{ width: "100%", height: "100%", paddingBottom: "0.5rem" }}>
+          <ResponsiveContainer width="100%" height="100%">
+            <BarChart
+              data={chartData}
+              margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
+              barGap={2}
+              barCategoryGap="15%"
+            >
+              <CartesianGrid strokeDasharray="3 3" />
+              <XAxis
+                dataKey="month"
+                angle={0}
+                textAnchor="middle"
+                height={40}
+              />
+              <YAxis />
+              <Tooltip />
+              <Legend verticalAlign="top" height={30} />
+              {sortedYears.map((year) => (
+                <Bar
+                  key={year}
+                  dataKey={year}
+                  fill={getYearColor(year)}
+                  isAnimationActive={false}
+                >
+                  <LabelList dataKey={year} position="top" />
+                </Bar>
+              ))}
+            </BarChart>
+          </ResponsiveContainer>
+        </div>
       </div>
     </div>
   );
