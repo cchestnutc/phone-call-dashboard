@@ -30,6 +30,7 @@ export default function CallsTab() {
 
   const [aggregateDocs, setAggregateDocs] = useState([]);
   const [callsForAgentFilter, setCallsForAgentFilter] = useState([]);
+  const [previousPeriodCalls, setPreviousPeriodCalls] = useState([]);
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState([currentMonth]);
   const [selectedYear, setSelectedYear] = useState([previousYear, currentYear]);
@@ -71,20 +72,20 @@ export default function CallsTab() {
   }, [selectedYear]);
 
   useEffect(() => {
-    const fetchCallsForAgentFilter = async () => {
+    const fetchCallsForSelectedMonth = async () => {
       if (selectedYear.length !== 1 || selectedMonth.length !== 1) {
         setCallsForAgentFilter([]);
         return;
       }
 
       try {
-        const filterQuery = query(
+        const selectedMonthQuery = query(
           collection(db, "phone_calls"),
           where("year", "==", selectedYear[0]),
           where("month", "==", selectedMonth[0])
         );
 
-        const snap = await getDocs(filterQuery);
+        const snap = await getDocs(selectedMonthQuery);
         const docs = snap.docs.map((doc) => ({
           id: doc.id,
           ...doc.data(),
@@ -92,18 +93,54 @@ export default function CallsTab() {
 
         setCallsForAgentFilter(docs);
       } catch (error) {
-        console.error("Error fetching calls for agent filter:", error);
+        console.error("Error fetching calls for selected month:", error);
         setCallsForAgentFilter([]);
       }
     };
 
-    fetchCallsForAgentFilter();
+    fetchCallsForSelectedMonth();
   }, [selectedYear, selectedMonth]);
 
-  const filteredAggregateDocs = useMemo(() => {
-    if (selectedMonth.length === 0) return aggregateDocs;
-    return aggregateDocs.filter((doc) => selectedMonth.includes(doc.month));
-  }, [aggregateDocs, selectedMonth]);
+  useEffect(() => {
+    const fetchPreviousPeriodCalls = async () => {
+      if (selectedYear.length !== 1 || selectedMonth.length !== 1) {
+        setPreviousPeriodCalls([]);
+        return;
+      }
+
+      const currentSelectedYear = selectedYear[0];
+      const currentSelectedMonth = selectedMonth[0];
+
+      const previousMonth = currentSelectedMonth === 1 ? 12 : currentSelectedMonth - 1;
+      const previousMonthYear =
+        currentSelectedMonth === 1 ? currentSelectedYear - 1 : currentSelectedYear;
+
+      try {
+        const previousMonthQuery = query(
+          collection(db, "phone_calls"),
+          where("year", "==", previousMonthYear),
+          where("month", "==", previousMonth)
+        );
+
+        const snap = await getDocs(previousMonthQuery);
+        const docs = snap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setPreviousPeriodCalls(docs);
+      } catch (error) {
+        console.error("Error fetching previous period calls:", error);
+        setPreviousPeriodCalls([]);
+      }
+    };
+
+    fetchPreviousPeriodCalls();
+  }, [selectedYear, selectedMonth]);
+
+  const chartAggregateDocs = useMemo(() => {
+    return aggregateDocs;
+  }, [aggregateDocs]);
 
   const agentList = useMemo(() => {
     return getAvailableAgentsFromCalls(callsForAgentFilter);
@@ -122,6 +159,14 @@ export default function CallsTab() {
       selectedAgents.includes(getAgentName(call))
     );
   }, [callsForAgentFilter, selectedAgents]);
+
+  const filteredPreviousPeriodCalls = useMemo(() => {
+    if (selectedAgents.length === 0) return previousPeriodCalls;
+
+    return previousPeriodCalls.filter((call) =>
+      selectedAgents.includes(getAgentName(call))
+    );
+  }, [previousPeriodCalls, selectedAgents]);
 
   const agentSummaryRows = useMemo(() => {
     return buildAgentSummaryFromCalls(filteredCallsForDetails);
@@ -148,14 +193,17 @@ export default function CallsTab() {
       </div>
 
       <div className="section-block">
-        <CallKpiCards calls={filteredCallsForDetails} />
+        <CallKpiCards
+          calls={filteredCallsForDetails}
+          previousPeriodCalls={filteredPreviousPeriodCalls}
+        />
       </div>
 
       <div className="section-block">
         <div className="summary-breakdown-container">
           <div className="monthly-chart">
             <MonthlyCallVolumeChart
-              aggregateDocs={filteredAggregateDocs}
+              aggregateDocs={chartAggregateDocs}
               selectedAgents={selectedAgents}
               title={loadingSummary ? "Call Volume (Loading...)" : "Call Volume"}
             />
