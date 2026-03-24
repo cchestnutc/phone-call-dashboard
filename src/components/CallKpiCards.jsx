@@ -85,7 +85,7 @@ function CallKpiCards({
       style={{
         width: "100%",
         display: "grid",
-        gridTemplateColumns: "repeat(auto-fit, minmax(150px, 1fr))",
+        gridTemplateColumns: "repeat(8, 1fr)",
         gap: "1rem",
       }}
     >
