@@ -72,33 +72,40 @@ export default function CallsTab() {
   }, [selectedYear]);
 
   useEffect(() => {
-    const fetchCallsForSelectedMonth = async () => {
-      if (selectedYear.length !== 1 || selectedMonth.length !== 1) {
+    const fetchCallsForSelectedPeriod = async () => {
+      if (selectedYear.length !== 1 || selectedMonth.length === 0) {
         setCallsForAgentFilter([]);
         return;
       }
 
       try {
-        const selectedMonthQuery = query(
-          collection(db, "phone_calls"),
-          where("year", "==", selectedYear[0]),
-          where("month", "==", selectedMonth[0])
+        const snapshots = await Promise.all(
+          selectedMonth.map((month) =>
+            getDocs(
+              query(
+                collection(db, "phone_calls"),
+                where("year", "==", selectedYear[0]),
+                where("month", "==", month)
+              )
+            )
+          )
         );
 
-        const snap = await getDocs(selectedMonthQuery);
-        const docs = snap.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        const docs = snapshots.flatMap((snap) =>
+          snap.docs.map((doc) => ({
+            id: doc.id,
+            ...doc.data(),
+          }))
+        );
 
         setCallsForAgentFilter(docs);
       } catch (error) {
-        console.error("Error fetching calls for selected month:", error);
+        console.error("Error fetching calls for selected period:", error);
         setCallsForAgentFilter([]);
       }
     };
 
-    fetchCallsForSelectedMonth();
+    fetchCallsForSelectedPeriod();
   }, [selectedYear, selectedMonth]);
 
   useEffect(() => {
@@ -111,9 +118,12 @@ export default function CallsTab() {
       const currentSelectedYear = selectedYear[0];
       const currentSelectedMonth = selectedMonth[0];
 
-      const previousMonth = currentSelectedMonth === 1 ? 12 : currentSelectedMonth - 1;
+      const previousMonth =
+        currentSelectedMonth === 1 ? 12 : currentSelectedMonth - 1;
       const previousMonthYear =
-        currentSelectedMonth === 1 ? currentSelectedYear - 1 : currentSelectedYear;
+        currentSelectedMonth === 1
+          ? currentSelectedYear - 1
+          : currentSelectedYear;
 
       try {
         const previousMonthQuery = query(
@@ -146,15 +156,23 @@ export default function CallsTab() {
     return getAvailableAgentsFromCalls(callsForAgentFilter);
   }, [callsForAgentFilter]);
 
-const availableYears = useMemo(() => {
-  const aggregateYears = getAvailableYearsFromAggregateDocs(aggregateDocs);
-  const selectedYears = selectedYear || [];
-  const fallbackYears = [2022, 2023, 2024, 2025, 2026, previousYear, currentYear];
+  const availableYears = useMemo(() => {
+    const aggregateYears = getAvailableYearsFromAggregateDocs(aggregateDocs);
+    const selectedYears = selectedYear || [];
+    const fallbackYears = [
+      2022,
+      2023,
+      2024,
+      2025,
+      2026,
+      previousYear,
+      currentYear,
+    ];
 
-  return Array.from(
-    new Set([...aggregateYears, ...selectedYears, ...fallbackYears])
-  ).sort((a, b) => b - a);
-}, [aggregateDocs, selectedYear, currentYear, previousYear]);
+    return Array.from(
+      new Set([...aggregateYears, ...selectedYears, ...fallbackYears])
+    ).sort((a, b) => b - a);
+  }, [aggregateDocs, selectedYear, currentYear, previousYear]);
 
   const filteredCallsForDetails = useMemo(() => {
     if (selectedAgents.length === 0) return callsForAgentFilter;
