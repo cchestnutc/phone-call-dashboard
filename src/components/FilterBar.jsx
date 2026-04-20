@@ -10,64 +10,83 @@ import {
   Legend,
   LabelList,
 } from "recharts";
-import { buildMonthlyChartDataFromAggregateDocs } from "../utils/phoneDashboardData";
 
-const monthNumberMap = {
-  jan: 1,
-  january: 1,
-  feb: 2,
-  february: 2,
-  mar: 3,
-  march: 3,
-  apr: 4,
-  april: 4,
-  may: 5,
-  jun: 6,
-  june: 6,
-  jul: 7,
-  july: 7,
-  aug: 8,
-  august: 8,
-  sep: 9,
-  september: 9,
-  oct: 10,
-  october: 10,
-  nov: 11,
-  november: 11,
-  dec: 12,
-  december: 12,
+const MONTH_LABELS = {
+  1: "Jan",
+  2: "Feb",
+  3: "Mar",
+  4: "Apr",
+  5: "May",
+  6: "Jun",
+  7: "Jul",
+  8: "Aug",
+  9: "Sep",
+  10: "Oct",
+  11: "Nov",
+  12: "Dec",
 };
 
 const MonthlyCallVolumeChart = ({
   aggregateDocs = [],
   selectedAgents = [],
   selectedMonth = [],
+  selectedYear = [],
   title = "Call Volume",
 }) => {
   const currentYear = new Date().getFullYear();
 
-  const chartData = useMemo(() => {
-    let data = buildMonthlyChartDataFromAggregateDocs(
-      aggregateDocs,
-      selectedAgents
-    );
+  const filteredDocs = useMemo(() => {
+    let docs = [...aggregateDocs];
 
-    if (selectedMonth.length > 0) {
-      data = data.filter((row) => {
-        const rowMonthNumber =
-          monthNumberMap[String(row.month).toLowerCase()] ?? null;
-        return selectedMonth.includes(rowMonthNumber);
-      });
+    if (selectedYear.length > 0) {
+      docs = docs.filter((doc) => selectedYear.includes(Number(doc.year)));
     }
 
-    return data;
-  }, [aggregateDocs, selectedAgents, selectedMonth]);
+    if (selectedMonth.length > 0) {
+      docs = docs.filter((doc) => selectedMonth.includes(Number(doc.month)));
+    }
+
+    return docs;
+  }, [aggregateDocs, selectedMonth, selectedYear]);
 
   const sortedYears = useMemo(() => {
-    return Array.from(new Set(aggregateDocs.map((doc) => doc.year))).sort(
+    return Array.from(new Set(filteredDocs.map((doc) => Number(doc.year)))).sort(
       (a, b) => a - b
     );
-  }, [aggregateDocs]);
+  }, [filteredDocs]);
+
+  const chartData = useMemo(() => {
+    const rowsByMonth = {};
+
+    filteredDocs.forEach((doc) => {
+      const monthNum = Number(doc.month);
+      const year = Number(doc.year);
+
+      if (!monthNum || !year) return;
+
+      if (!rowsByMonth[monthNum]) {
+        rowsByMonth[monthNum] = {
+          month: MONTH_LABELS[monthNum] || String(monthNum),
+        };
+      }
+
+      let value = Number(doc.totalCalls) || 0;
+
+      if (selectedAgents.length > 0) {
+        const agentTotals = doc.agentTotals || {};
+        value = selectedAgents.reduce(
+          (sum, agent) => sum + (Number(agentTotals[agent]) || 0),
+          0
+        );
+      }
+
+      rowsByMonth[monthNum][year] = value;
+    });
+
+    return Object.entries(rowsByMonth)
+      .sort((a, b) => Number(a[0]) - Number(b[0]))
+      .map(([, row]) => row);
+  }, [filteredDocs, selectedAgents]);
 
   const getYearColor = (year) => {
     if (year === currentYear) return "#59a14f";
@@ -109,12 +128,7 @@ const MonthlyCallVolumeChart = ({
               barCategoryGap="15%"
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="month"
-                angle={0}
-                textAnchor="middle"
-                height={40}
-              />
+              <XAxis dataKey="month" angle={0} textAnchor="middle" height={40} />
               <YAxis />
               <Tooltip />
               <Legend verticalAlign="top" height={30} />
