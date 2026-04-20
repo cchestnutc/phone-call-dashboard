@@ -10,7 +10,7 @@ import {
   Legend,
   LabelList,
 } from "recharts";
-import { buildMonthlyChartDataFromAggregateDocs } from "../utils/phoneDashboardData";
+import { buildMonthlyChartDataFromAggregateDocs } from "./utils/phoneDashboardData";
 
 const MonthlyCallVolumeChart = ({
   aggregateDocs = [],
