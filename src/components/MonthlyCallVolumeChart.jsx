@@ -15,13 +15,59 @@ import { buildMonthlyChartDataFromAggregateDocs } from "../utils/phoneDashboardD
 const MonthlyCallVolumeChart = ({
   aggregateDocs = [],
   selectedAgents = [],
+  selectedMonths = [],
   title = "Call Volume",
 }) => {
   const currentYear = new Date().getFullYear();
 
   const chartData = useMemo(() => {
-    return buildMonthlyChartDataFromAggregateDocs(aggregateDocs, selectedAgents);
-  }, [aggregateDocs, selectedAgents]);
+    let data = buildMonthlyChartDataFromAggregateDocs(
+      aggregateDocs,
+      selectedAgents
+    );
+
+    if (selectedMonths.length > 0) {
+      const monthMap = {
+        january: "jan",
+        february: "feb",
+        march: "mar",
+        april: "apr",
+        may: "may",
+        june: "jun",
+        july: "jul",
+        august: "aug",
+        september: "sep",
+        october: "oct",
+        november: "nov",
+        december: "dec",
+        jan: "jan",
+        feb: "feb",
+        mar: "mar",
+        apr: "apr",
+        may: "may",
+        jun: "jun",
+        jul: "jul",
+        aug: "aug",
+        sep: "sep",
+        oct: "oct",
+        nov: "nov",
+        dec: "dec",
+      };
+
+      const normalizedSelectedMonths = selectedMonths.map(
+        (m) => monthMap[String(m).toLowerCase()] || String(m).toLowerCase()
+      );
+
+      data = data.filter((row) => {
+        const rowMonth =
+          monthMap[String(row.month).toLowerCase()] ||
+          String(row.month).toLowerCase();
+        return normalizedSelectedMonths.includes(rowMonth);
+      });
+    }
+
+    return data;
+  }, [aggregateDocs, selectedAgents, selectedMonths]);
 
   const sortedYears = useMemo(() => {
     return Array.from(new Set(aggregateDocs.map((doc) => doc.year))).sort(
