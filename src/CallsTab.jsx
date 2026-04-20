@@ -32,7 +32,7 @@ export default function CallsTab() {
   const [callsForAgentFilter, setCallsForAgentFilter] = useState([]);
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState([currentMonth]);
-  const [selectedYear, setSelectedYear] = useState([previousYear, currentYear]);
+  const [selectedYear, setSelectedYear] = useState([currentYear]);
   const [loadingSummary, setLoadingSummary] = useState(false);
 
   useEffect(() => {
