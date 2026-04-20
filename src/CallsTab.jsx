@@ -10,7 +10,7 @@ import {
   Legend,
   LabelList,
 } from "recharts";
-import { buildMonthlyChartDataFromAggregateDocs } from "./utils/phoneDashboardData";
+import { buildMonthlyChartDataFromAggregateDocs } from "../utils/phoneDashboardData";
 
 const MonthlyCallVolumeChart = ({
   aggregateDocs = [],
@@ -21,16 +21,47 @@ const MonthlyCallVolumeChart = ({
   const currentYear = new Date().getFullYear();
 
   const chartData = useMemo(() => {
-    let data = buildMonthlyChartDataFromAggregateDocs(aggregateDocs, selectedAgents);
+    let data = buildMonthlyChartDataFromAggregateDocs(
+      aggregateDocs,
+      selectedAgents
+    );
 
     if (selectedMonths.length > 0) {
-      const normalizedSelectedMonths = selectedMonths.map((m) =>
-        typeof m === "string" ? m.toLowerCase() : m
-      );
+      const monthMap = {
+        january: "jan",
+        february: "feb",
+        march: "mar",
+        april: "apr",
+        may: "may",
+        june: "jun",
+        july: "jul",
+        august: "aug",
+        september: "sep",
+        october: "oct",
+        november: "nov",
+        december: "dec",
+        jan: "jan",
+        feb: "feb",
+        mar: "mar",
+        apr: "apr",
+        jun: "jun",
+        jul: "jul",
+        aug: "aug",
+        sep: "sep",
+        oct: "oct",
+        nov: "nov",
+        dec: "dec",
+      };
 
-      data = data.filter((row) =>
-        normalizedSelectedMonths.includes(String(row.month).toLowerCase())
-      );
+      const normalizedSelectedMonths = selectedMonths
+        .map((m) => monthMap[String(m).toLowerCase()] || String(m).toLowerCase());
+
+      data = data.filter((row) => {
+        const rowMonth =
+          monthMap[String(row.month).toLowerCase()] ||
+          String(row.month).toLowerCase();
+        return normalizedSelectedMonths.includes(rowMonth);
+      });
     }
 
     return data;
@@ -82,12 +113,7 @@ const MonthlyCallVolumeChart = ({
               barCategoryGap="15%"
             >
               <CartesianGrid strokeDasharray="3 3" />
-              <XAxis
-                dataKey="month"
-                angle={0}
-                textAnchor="middle"
-                height={40}
-              />
+              <XAxis dataKey="month" angle={0} textAnchor="middle" height={40} />
               <YAxis />
               <Tooltip />
               <Legend verticalAlign="top" height={30} />
