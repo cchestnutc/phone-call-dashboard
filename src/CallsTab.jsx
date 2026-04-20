@@ -1,138 +1,185 @@
-import React, { useMemo } from "react";
+import React, { useEffect, useMemo, useState } from "react";
 import {
-  BarChart,
-  Bar,
-  XAxis,
-  YAxis,
-  Tooltip,
-  CartesianGrid,
-  ResponsiveContainer,
-  Legend,
-  LabelList,
-} from "recharts";
-import { buildMonthlyChartDataFromAggregateDocs } from "./utils/phoneDashboardData";
+  collection,
+  getDocs,
+  orderBy,
+  query,
+  where,
+} from "firebase/firestore";
+import { db } from "./firebase";
 
-const MonthlyCallVolumeChart = ({
-  aggregateDocs = [],
-  selectedAgents = [],
-  selectedMonths = [],
-  title = "Call Volume",
-}) => {
-  const currentYear = new Date().getFullYear();
+import AgentSummary from "./components/AgentSummary";
+import CallKpiCards from "./components/CallKpiCards";
+import HourlyBreakdown from "./components/HourlyBreakdown";
+import MonthlyCallVolumeChart from "./components/MonthlyCallVolumeChart";
+import RawCallsDrilldown from "./components/RawCallsDrilldown";
+import FilterBar from "./components/FilterBar";
+import {
+  buildAgentSummaryFromCalls,
+  buildHourlyRowsFromCalls,
+  getAgentName,
+  getAvailableAgentsFromCalls,
+  getAvailableYearsFromAggregateDocs,
+} from "./utils/phoneDashboardData";
 
-  const chartData = useMemo(() => {
-    let data = buildMonthlyChartDataFromAggregateDocs(
-      aggregateDocs,
-      selectedAgents
+export default function CallsTab() {
+  const currentDate = new Date();
+  const currentMonth = currentDate.getMonth() + 1;
+  const currentYear = currentDate.getFullYear();
+  const previousYear = currentYear - 1;
+
+  const [aggregateDocs, setAggregateDocs] = useState([]);
+  const [callsForAgentFilter, setCallsForAgentFilter] = useState([]);
+  const [selectedAgents, setSelectedAgents] = useState([]);
+  const [selectedMonth, setSelectedMonth] = useState([currentMonth]);
+  const [selectedYear, setSelectedYear] = useState([previousYear, currentYear]);
+  const [loadingSummary, setLoadingSummary] = useState(false);
+
+  useEffect(() => {
+    const fetchAggregates = async () => {
+      if (selectedYear.length === 0) {
+        setAggregateDocs([]);
+        return;
+      }
+
+      setLoadingSummary(true);
+
+      try {
+        const summaryQuery = query(
+          collection(db, "phone_call_monthly_aggregates"),
+          where("year", "in", selectedYear.slice(0, 10)),
+          orderBy("year", "desc"),
+          orderBy("month", "asc")
+        );
+
+        const snap = await getDocs(summaryQuery);
+        const docs = snap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setAggregateDocs(docs);
+      } catch (error) {
+        console.error("Error fetching monthly aggregate docs:", error);
+        setAggregateDocs([]);
+      } finally {
+        setLoadingSummary(false);
+      }
+    };
+
+    fetchAggregates();
+  }, [selectedYear]);
+
+  useEffect(() => {
+    const fetchCallsForAgentFilter = async () => {
+      if (selectedYear.length !== 1 || selectedMonth.length !== 1) {
+        setCallsForAgentFilter([]);
+        return;
+      }
+
+      try {
+        const filterQuery = query(
+          collection(db, "phone_calls"),
+          where("year", "==", selectedYear[0]),
+          where("month", "==", selectedMonth[0])
+        );
+
+        const snap = await getDocs(filterQuery);
+        const docs = snap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+
+        setCallsForAgentFilter(docs);
+      } catch (error) {
+        console.error("Error fetching calls for agent filter:", error);
+        setCallsForAgentFilter([]);
+      }
+    };
+
+    fetchCallsForAgentFilter();
+  }, [selectedYear, selectedMonth]);
+
+  const filteredAggregateDocs = useMemo(() => {
+    if (selectedMonth.length === 0) return aggregateDocs;
+    return aggregateDocs.filter((doc) => selectedMonth.includes(doc.month));
+  }, [aggregateDocs, selectedMonth]);
+
+  const agentList = useMemo(() => {
+    return getAvailableAgentsFromCalls(callsForAgentFilter);
+  }, [callsForAgentFilter]);
+
+  const availableYears = useMemo(() => {
+    const aggregateYears = getAvailableYearsFromAggregateDocs(aggregateDocs);
+    const fallbackYears = [previousYear, currentYear];
+    return aggregateYears.length > 0 ? aggregateYears : fallbackYears;
+  }, [aggregateDocs, currentYear, previousYear]);
+
+  const filteredCallsForDetails = useMemo(() => {
+    if (selectedAgents.length === 0) return callsForAgentFilter;
+
+    return callsForAgentFilter.filter((call) =>
+      selectedAgents.includes(getAgentName(call))
     );
+  }, [callsForAgentFilter, selectedAgents]);
 
-    if (selectedMonths.length > 0) {
-      const monthMap = {
-        january: "jan",
-        february: "feb",
-        march: "mar",
-        april: "apr",
-        may: "may",
-        june: "jun",
-        july: "jul",
-        august: "aug",
-        september: "sep",
-        october: "oct",
-        november: "nov",
-        december: "dec",
-        jan: "jan",
-        feb: "feb",
-        mar: "mar",
-        apr: "apr",
-        jun: "jun",
-        jul: "jul",
-        aug: "aug",
-        sep: "sep",
-        oct: "oct",
-        nov: "nov",
-        dec: "dec",
-      };
+  const agentSummaryRows = useMemo(() => {
+    return buildAgentSummaryFromCalls(filteredCallsForDetails);
+  }, [filteredCallsForDetails]);
 
-      const normalizedSelectedMonths = selectedMonths
-        .map((m) => monthMap[String(m).toLowerCase()] || String(m).toLowerCase());
-
-      data = data.filter((row) => {
-        const rowMonth =
-          monthMap[String(row.month).toLowerCase()] ||
-          String(row.month).toLowerCase();
-        return normalizedSelectedMonths.includes(rowMonth);
-      });
-    }
-
-    return data;
-  }, [aggregateDocs, selectedAgents, selectedMonths]);
-
-  const sortedYears = useMemo(() => {
-    return Array.from(new Set(aggregateDocs.map((doc) => doc.year))).sort(
-      (a, b) => a - b
-    );
-  }, [aggregateDocs]);
-
-  const getYearColor = (year) => {
-    if (year === currentYear) return "#59a14f";
-    if (year === currentYear - 1) return "#f28e2c";
-
-    const yearColors = ["#4e79a7", "#e15759", "#b07aa1", "#76b7b2", "#edc949"];
-    const index = sortedYears.indexOf(year) % yearColors.length;
-    return yearColors[index];
-  };
+  const hourlyRows = useMemo(() => {
+    return buildHourlyRowsFromCalls(filteredCallsForDetails);
+  }, [filteredCallsForDetails]);
 
   return (
-    <div className="monthly-chart">
-      <div
-        style={{
-          fontWeight: 600,
-          fontSize: "1rem",
-          textAlign: "center",
-          marginBottom: "0.5rem",
-          color: "#111827",
-        }}
-      >
-        {title}
+    <>
+      <div className="section-block">
+        <FilterBar
+          agents={agentList}
+          calls={callsForAgentFilter}
+          availableYears={availableYears}
+          selectedAgents={selectedAgents}
+          setSelectedAgents={setSelectedAgents}
+          selectedMonth={selectedMonth}
+          setSelectedMonth={setSelectedMonth}
+          selectedYear={selectedYear}
+          setSelectedYear={setSelectedYear}
+        />
       </div>
 
-      <div
-        style={{
-          width: "100%",
-          height: "320px",
-          position: "relative",
-          overflow: "hidden",
-        }}
-      >
-        <div style={{ width: "100%", height: "100%", paddingBottom: "0.5rem" }}>
-          <ResponsiveContainer width="100%" height="100%">
-            <BarChart
-              data={chartData}
-              margin={{ top: 10, right: 10, left: 0, bottom: 10 }}
-              barGap={2}
-              barCategoryGap="15%"
-            >
-              <CartesianGrid strokeDasharray="3 3" />
-              <XAxis dataKey="month" angle={0} textAnchor="middle" height={40} />
-              <YAxis />
-              <Tooltip />
-              <Legend verticalAlign="top" height={30} />
-              {sortedYears.map((year) => (
-                <Bar
-                  key={year}
-                  dataKey={year}
-                  fill={getYearColor(year)}
-                  isAnimationActive={false}
-                >
-                  <LabelList dataKey={year} position="top" />
-                </Bar>
-              ))}
-            </BarChart>
-          </ResponsiveContainer>
+      <div className="section-block">
+        <CallKpiCards calls={filteredCallsForDetails} />
+      </div>
+
+      <div className="section-block">
+        <div className="summary-breakdown-container">
+          <div className="monthly-chart">
+            <MonthlyCallVolumeChart
+              aggregateDocs={filteredAggregateDocs}
+              selectedAgents={selectedAgents}
+              selectedMonth={selectedMonth}
+              selectedYear={selectedYear}
+              title={loadingSummary ? "Call Volume (Loading...)" : "Call Volume"}
+            />
+          </div>
+
+          <div className="agent-summary">
+            <AgentSummary rows={agentSummaryRows} />
+          </div>
+
+          <div className="hourly-breakdown">
+            <HourlyBreakdown rows={hourlyRows} />
+          </div>
+
+          <div className="agent-summary">
+            <RawCallsDrilldown
+              selectedYear={selectedYear}
+              selectedMonth={selectedMonth}
+              selectedAgents={selectedAgents}
+            />
+          </div>
         </div>
       </div>
-    </div>
+    </>
   );
-};
-
-export default MonthlyCallVolumeChart;
+}
