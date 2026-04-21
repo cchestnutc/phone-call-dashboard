@@ -21,17 +21,43 @@ import {
   getAvailableYearsFromAggregateDocs,
 } from "./utils/phoneDashboardData";
 
+function getPreviousMonthYear(year, month) {
+  if (month === 1) {
+    return { year: year - 1, month: 12 };
+  }
+  return { year, month: month - 1 };
+}
+
 export default function CallsTab() {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1;
   const currentYear = currentDate.getFullYear();
 
   const [aggregateDocs, setAggregateDocs] = useState([]);
-  const [callsForSelectedPeriod, setCallsForSelectedPeriod] = useState([]);
+  const [allAggregateDocs, setAllAggregateDocs] = useState([]);
+  const [callsForSelectedYears, setCallsForSelectedYears] = useState([]);
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState([currentMonth]);
   const [selectedYear, setSelectedYear] = useState([currentYear]);
   const [loadingSummary, setLoadingSummary] = useState(false);
+
+  useEffect(() => {
+    const fetchAllAggregateDocs = async () => {
+      try {
+        const snap = await getDocs(collection(db, "phone_call_monthly_aggregates"));
+        const docs = snap.docs.map((doc) => ({
+          id: doc.id,
+          ...doc.data(),
+        }));
+        setAllAggregateDocs(docs);
+      } catch (error) {
+        console.error("Error fetching all aggregate docs:", error);
+        setAllAggregateDocs([]);
+      }
+    };
+
+    fetchAllAggregateDocs();
+  }, []);
 
   useEffect(() => {
     const fetchAggregates = async () => {
@@ -43,18 +69,25 @@ export default function CallsTab() {
       setLoadingSummary(true);
 
       try {
-        const summaryQuery = query(
-          collection(db, "phone_call_monthly_aggregates"),
-          where("year", "in", selectedYear.slice(0, 10))
-        );
+        const results = [];
 
-        const snap = await getDocs(summaryQuery);
-        const docs = snap.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        for (const year of selectedYear.slice(0, 10)) {
+          const q = query(
+            collection(db, "phone_call_monthly_aggregates"),
+            where("year", "==", year)
+          );
 
-        setAggregateDocs(docs);
+          const snap = await getDocs(q);
+
+          snap.docs.forEach((doc) => {
+            results.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+          });
+        }
+
+        setAggregateDocs(results);
       } catch (error) {
         console.error("Error fetching monthly aggregate docs:", error);
         setAggregateDocs([]);
@@ -67,9 +100,9 @@ export default function CallsTab() {
   }, [selectedYear]);
 
   useEffect(() => {
-    const fetchCallsForSelectedPeriod = async () => {
+    const fetchCallsForSelectedYears = async () => {
       if (selectedYear.length === 0) {
-        setCallsForSelectedPeriod([]);
+        setCallsForSelectedYears([]);
         return;
       }
 
@@ -92,14 +125,14 @@ export default function CallsTab() {
           });
         }
 
-        setCallsForSelectedPeriod(results);
+        setCallsForSelectedYears(results);
       } catch (error) {
-        console.error("Error fetching calls for selected period:", error);
-        setCallsForSelectedPeriod([]);
+        console.error("Error fetching calls for selected years:", error);
+        setCallsForSelectedYears([]);
       }
     };
 
-    fetchCallsForSelectedPeriod();
+    fetchCallsForSelectedYears();
   }, [selectedYear]);
 
   const filteredAggregateDocs = useMemo(() => {
@@ -113,14 +146,14 @@ export default function CallsTab() {
   }, [aggregateDocs, selectedMonth]);
 
   const filteredCallsByTime = useMemo(() => {
-    let calls = callsForSelectedPeriod;
+    let calls = callsForSelectedYears;
 
     if (selectedMonth.length > 0) {
       calls = calls.filter((call) => selectedMonth.includes(Number(call.month)));
     }
 
     return calls;
-  }, [callsForSelectedPeriod, selectedMonth]);
+  }, [callsForSelectedYears, selectedMonth]);
 
   const filteredCallsForDetails = useMemo(() => {
     if (selectedAgents.length === 0) return filteredCallsByTime;
@@ -130,14 +163,53 @@ export default function CallsTab() {
     );
   }, [filteredCallsByTime, selectedAgents]);
 
+  const previousPeriodCalls = useMemo(() => {
+    if (selectedYear.length === 0 || selectedMonth.length === 0) return [];
+
+    const sortedSelections = [];
+
+    selectedYear.forEach((year) => {
+      selectedMonth.forEach((month) => {
+        sortedSelections.push({
+          year: Number(year),
+          month: Number(month),
+        });
+      });
+    });
+
+    sortedSelections.sort((a, b) => {
+      if (a.year !== b.year) return a.year - b.year;
+      return a.month - b.month;
+    });
+
+    const latest = sortedSelections[sortedSelections.length - 1];
+    if (!latest) return [];
+
+    const prev = getPreviousMonthYear(latest.year, latest.month);
+
+    let previousCalls = callsForSelectedYears.filter(
+      (call) =>
+        Number(call.year) === prev.year &&
+        Number(call.month) === prev.month
+    );
+
+    if (selectedAgents.length > 0) {
+      previousCalls = previousCalls.filter((call) =>
+        selectedAgents.includes(getAgentName(call))
+      );
+    }
+
+    return previousCalls;
+  }, [callsForSelectedYears, selectedAgents, selectedMonth, selectedYear]);
+
   const agentList = useMemo(() => {
     return getAvailableAgentsFromCalls(filteredCallsByTime);
   }, [filteredCallsByTime]);
 
   const availableYears = useMemo(() => {
-    const aggregateYears = getAvailableYearsFromAggregateDocs(aggregateDocs);
+    const aggregateYears = getAvailableYearsFromAggregateDocs(allAggregateDocs);
     return aggregateYears.length > 0 ? aggregateYears : [currentYear];
-  }, [aggregateDocs, currentYear]);
+  }, [allAggregateDocs, currentYear]);
 
   const agentSummaryRows = useMemo(() => {
     return buildAgentSummaryFromCalls(filteredCallsForDetails);
@@ -164,7 +236,10 @@ export default function CallsTab() {
       </div>
 
       <div className="section-block">
-        <CallKpiCards calls={filteredCallsForDetails} />
+        <CallKpiCards
+          calls={filteredCallsForDetails}
+          previousPeriodCalls={previousPeriodCalls}
+        />
       </div>
 
       <div className="section-block">
