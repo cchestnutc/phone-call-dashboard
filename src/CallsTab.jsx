@@ -2,7 +2,6 @@ import React, { useEffect, useMemo, useState } from "react";
 import {
   collection,
   getDocs,
-  orderBy,
   query,
   where,
 } from "firebase/firestore";
@@ -26,10 +25,9 @@ export default function CallsTab() {
   const currentDate = new Date();
   const currentMonth = currentDate.getMonth() + 1;
   const currentYear = currentDate.getFullYear();
-  const previousYear = currentYear - 1;
 
   const [aggregateDocs, setAggregateDocs] = useState([]);
-  const [callsForAgentFilter, setCallsForAgentFilter] = useState([]);
+  const [callsForSelectedPeriod, setCallsForSelectedPeriod] = useState([]);
   const [selectedAgents, setSelectedAgents] = useState([]);
   const [selectedMonth, setSelectedMonth] = useState([currentMonth]);
   const [selectedYear, setSelectedYear] = useState([currentYear]);
@@ -47,9 +45,7 @@ export default function CallsTab() {
       try {
         const summaryQuery = query(
           collection(db, "phone_call_monthly_aggregates"),
-          where("year", "in", selectedYear.slice(0, 10)),
-          orderBy("year", "desc"),
-          orderBy("month", "asc")
+          where("year", "in", selectedYear.slice(0, 10))
         );
 
         const snap = await getDocs(summaryQuery);
@@ -71,57 +67,77 @@ export default function CallsTab() {
   }, [selectedYear]);
 
   useEffect(() => {
-    const fetchCallsForAgentFilter = async () => {
-      if (selectedYear.length !== 1 || selectedMonth.length !== 1) {
-        setCallsForAgentFilter([]);
+    const fetchCallsForSelectedPeriod = async () => {
+      if (selectedYear.length === 0) {
+        setCallsForSelectedPeriod([]);
         return;
       }
 
       try {
-        const filterQuery = query(
-          collection(db, "phone_calls"),
-          where("year", "==", selectedYear[0]),
-          where("month", "==", selectedMonth[0])
-        );
+        const results = [];
 
-        const snap = await getDocs(filterQuery);
-        const docs = snap.docs.map((doc) => ({
-          id: doc.id,
-          ...doc.data(),
-        }));
+        for (const year of selectedYear.slice(0, 10)) {
+          const q = query(
+            collection(db, "phone_calls"),
+            where("year", "==", year)
+          );
 
-        setCallsForAgentFilter(docs);
+          const snap = await getDocs(q);
+
+          snap.docs.forEach((doc) => {
+            results.push({
+              id: doc.id,
+              ...doc.data(),
+            });
+          });
+        }
+
+        setCallsForSelectedPeriod(results);
       } catch (error) {
-        console.error("Error fetching calls for agent filter:", error);
-        setCallsForAgentFilter([]);
+        console.error("Error fetching calls for selected period:", error);
+        setCallsForSelectedPeriod([]);
       }
     };
 
-    fetchCallsForAgentFilter();
-  }, [selectedYear, selectedMonth]);
+    fetchCallsForSelectedPeriod();
+  }, [selectedYear]);
 
   const filteredAggregateDocs = useMemo(() => {
-    if (selectedMonth.length === 0) return aggregateDocs;
-    return aggregateDocs.filter((doc) => selectedMonth.includes(doc.month));
+    let docs = aggregateDocs;
+
+    if (selectedMonth.length > 0) {
+      docs = docs.filter((doc) => selectedMonth.includes(Number(doc.month)));
+    }
+
+    return docs;
   }, [aggregateDocs, selectedMonth]);
 
+  const filteredCallsByTime = useMemo(() => {
+    let calls = callsForSelectedPeriod;
+
+    if (selectedMonth.length > 0) {
+      calls = calls.filter((call) => selectedMonth.includes(Number(call.month)));
+    }
+
+    return calls;
+  }, [callsForSelectedPeriod, selectedMonth]);
+
+  const filteredCallsForDetails = useMemo(() => {
+    if (selectedAgents.length === 0) return filteredCallsByTime;
+
+    return filteredCallsByTime.filter((call) =>
+      selectedAgents.includes(getAgentName(call))
+    );
+  }, [filteredCallsByTime, selectedAgents]);
+
   const agentList = useMemo(() => {
-    return getAvailableAgentsFromCalls(callsForAgentFilter);
-  }, [callsForAgentFilter]);
+    return getAvailableAgentsFromCalls(filteredCallsByTime);
+  }, [filteredCallsByTime]);
 
   const availableYears = useMemo(() => {
     const aggregateYears = getAvailableYearsFromAggregateDocs(aggregateDocs);
-    const fallbackYears = [previousYear, currentYear];
-    return aggregateYears.length > 0 ? aggregateYears : fallbackYears;
-  }, [aggregateDocs, currentYear, previousYear]);
-
-  const filteredCallsForDetails = useMemo(() => {
-    if (selectedAgents.length === 0) return callsForAgentFilter;
-
-    return callsForAgentFilter.filter((call) =>
-      selectedAgents.includes(getAgentName(call))
-    );
-  }, [callsForAgentFilter, selectedAgents]);
+    return aggregateYears.length > 0 ? aggregateYears : [currentYear];
+  }, [aggregateDocs, currentYear]);
 
   const agentSummaryRows = useMemo(() => {
     return buildAgentSummaryFromCalls(filteredCallsForDetails);
@@ -136,7 +152,7 @@ export default function CallsTab() {
       <div className="section-block">
         <FilterBar
           agents={agentList}
-          calls={callsForAgentFilter}
+          calls={filteredCallsByTime}
           availableYears={availableYears}
           selectedAgents={selectedAgents}
           setSelectedAgents={setSelectedAgents}
