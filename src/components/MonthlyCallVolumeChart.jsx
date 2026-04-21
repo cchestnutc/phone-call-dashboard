@@ -12,68 +12,77 @@ import {
 } from "recharts";
 import { buildMonthlyChartDataFromAggregateDocs } from "../utils/phoneDashboardData";
 
+const MONTH_NUMBER_MAP = {
+  jan: 1,
+  january: 1,
+  feb: 2,
+  february: 2,
+  mar: 3,
+  march: 3,
+  apr: 4,
+  april: 4,
+  may: 5,
+  jun: 6,
+  june: 6,
+  jul: 7,
+  july: 7,
+  aug: 8,
+  august: 8,
+  sep: 9,
+  september: 9,
+  oct: 10,
+  october: 10,
+  nov: 11,
+  november: 11,
+  dec: 12,
+  december: 12,
+};
+
 const MonthlyCallVolumeChart = ({
   aggregateDocs = [],
   selectedAgents = [],
-  selectedMonths = [],
+  selectedMonth = [],
+  selectedYear = [],
   title = "Call Volume",
 }) => {
   const currentYear = new Date().getFullYear();
 
+  const filteredAggregateDocs = useMemo(() => {
+    let docs = [...aggregateDocs];
+
+    if (selectedYear.length > 0) {
+      docs = docs.filter((doc) => selectedYear.includes(Number(doc.year)));
+    }
+
+    if (selectedMonth.length > 0) {
+      docs = docs.filter((doc) => selectedMonth.includes(Number(doc.month)));
+    }
+
+    return docs;
+  }, [aggregateDocs, selectedMonth, selectedYear]);
+
   const chartData = useMemo(() => {
     let data = buildMonthlyChartDataFromAggregateDocs(
-      aggregateDocs,
+      filteredAggregateDocs,
       selectedAgents
     );
 
-    if (selectedMonths.length > 0) {
-      const monthMap = {
-        january: "jan",
-        february: "feb",
-        march: "mar",
-        april: "apr",
-        may: "may",
-        june: "jun",
-        july: "jul",
-        august: "aug",
-        september: "sep",
-        october: "oct",
-        november: "nov",
-        december: "dec",
-        jan: "jan",
-        feb: "feb",
-        mar: "mar",
-        apr: "apr",
-        may: "may",
-        jun: "jun",
-        jul: "jul",
-        aug: "aug",
-        sep: "sep",
-        oct: "oct",
-        nov: "nov",
-        dec: "dec",
-      };
-
-      const normalizedSelectedMonths = selectedMonths.map(
-        (m) => monthMap[String(m).toLowerCase()] || String(m).toLowerCase()
-      );
-
+    if (selectedMonth.length > 0) {
       data = data.filter((row) => {
-        const rowMonth =
-          monthMap[String(row.month).toLowerCase()] ||
-          String(row.month).toLowerCase();
-        return normalizedSelectedMonths.includes(rowMonth);
+        const rowMonthNumber =
+          MONTH_NUMBER_MAP[String(row.month).toLowerCase()] ?? null;
+        return selectedMonth.includes(rowMonthNumber);
       });
     }
 
     return data;
-  }, [aggregateDocs, selectedAgents, selectedMonths]);
+  }, [filteredAggregateDocs, selectedAgents, selectedMonth]);
 
   const sortedYears = useMemo(() => {
-    return Array.from(new Set(aggregateDocs.map((doc) => doc.year))).sort(
-      (a, b) => a - b
-    );
-  }, [aggregateDocs]);
+    return Array.from(
+      new Set(filteredAggregateDocs.map((doc) => Number(doc.year)))
+    ).sort((a, b) => a - b);
+  }, [filteredAggregateDocs]);
 
   const getYearColor = (year) => {
     if (year === currentYear) return "#59a14f";
