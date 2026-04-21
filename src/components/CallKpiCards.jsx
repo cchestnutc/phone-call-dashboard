@@ -57,10 +57,7 @@ function KpiCard({ label, value, subtext }) {
   );
 }
 
-function CallKpiCards({
-  calls = [],
-  previousPeriodCalls = [],
-}) {
+function CallKpiCards({ calls = [], previousPeriodCalls = [] }) {
   const {
     totalCalls,
     totalTalkSeconds,
@@ -89,10 +86,7 @@ function CallKpiCards({
         gap: "1rem",
       }}
     >
-      <KpiCard
-        label="Total Calls"
-        value={totalCalls.toLocaleString()}
-      />
+      <KpiCard label="Total Calls" value={totalCalls.toLocaleString()} />
 
       <KpiCard
         label="Total Talk Time"
